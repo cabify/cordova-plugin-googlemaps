@@ -723,13 +723,13 @@ App.prototype.refreshLayout = function() {
 
 App.prototype.isAvailable = function(callback) {
     var self = this;
-    
+
     /*
     var tmpmap = plugin.google.maps.Map.getMap(document.createElement("div"), {});
     tmpmap.remove();
     tmpmap = null;
     */
-    
+
     cordova.exec(function() {
         if (typeof callback === "function") {
             callback.call(self, true);
@@ -993,6 +993,9 @@ App.prototype.addMarker = function(markerOptions, callback) {
     markerOptions.rotation = markerOptions.rotation || 0;
     markerOptions.opacity = parseFloat("" + markerOptions.opacity, 10) || 1;
     markerOptions.disableAutoPan = markerOptions.disableAutoPan === undefined ? false : markerOptions.disableAutoPan;
+    markerOptions.markerType = markerOptions.markerType || undefined;
+    markerOptions.customMarkerFirstString = markerOptions.customMarkerFirstString || undefined;
+    markerOptions.customMarkerSecondString = markerOptions.customMarkerSecondString || undefined;
     markerOptions.params = markerOptions.params || {};
     if ("styles" in markerOptions) {
         markerOptions.styles = typeof markerOptions.styles === "object" ? markerOptions.styles : {};
