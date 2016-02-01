@@ -174,6 +174,9 @@ public class PluginMarker extends MyPlugin {
       if (opts.has("customMarkerSecondString")) {
           bundle.putString("customMarkerSecondString", opts.getString("customMarkerSecondString"));
       }
+      if (opts.has("mapOrientation")) {
+          bundle.putString("mapOrientation", opts.getString("mapOrientation"));
+      }
 
       this.setIcon_(marker, bundle, new PluginAsyncInterface() {
 
@@ -599,17 +602,19 @@ public class PluginMarker extends MyPlugin {
   }
 
   @SuppressWarnings("unused")
-  private void setCustomMarkerText(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
-    float firstString = (float)args.getDouble(2);
-    float secondString = (float)args.getDouble(3);
+  private void updateEstimationMarker(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
     String id = args.getString(1);
+    String firstString = args.getString(2);
+    String secondString = args.getString(3);
+    String mapOrientation = args.getString(4);
     Marker marker = this.getMarker(id);
 
-    Log.w("TEST","first "+firstString);
-    Log.w("TEST","second "+secondString);
+    boolean markerOrientation = mapOrientation.equals("e2w");
+
+    buildDestinationMarker(marker, markerOrientation, firstString, secondString);
 
     this.sendNoResult(callbackContext);
-  }  
+  }
 
 
   /**
@@ -733,7 +738,8 @@ public class PluginMarker extends MyPlugin {
       if (iconProperty.containsKey("customMarkerFirstString") && iconProperty.containsKey("customMarkerSecondString")) {
         String firstString = iconProperty.getString("customMarkerFirstString");
         String secondString = iconProperty.getString("customMarkerSecondString");
-        buildDestinationMarker(marker, true, firstString, secondString);
+        boolean markerOrientation = iconProperty.containsKey("mapOrientation") && iconProperty.getString("mapOrientation").equals("e2w");
+        buildDestinationMarker(marker, markerOrientation, firstString, secondString);
         callback.onPostExecute(marker);
         return;
       }

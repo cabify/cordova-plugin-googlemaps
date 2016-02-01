@@ -996,6 +996,7 @@ App.prototype.addMarker = function(markerOptions, callback) {
     markerOptions.markerType = markerOptions.markerType || undefined;
     markerOptions.customMarkerFirstString = markerOptions.customMarkerFirstString || undefined;
     markerOptions.customMarkerSecondString = markerOptions.customMarkerSecondString || undefined;
+    markerOptions.mapOrientation = markerOptions.mapOrientation || undefined;
     markerOptions.params = markerOptions.params || {};
     if ("styles" in markerOptions) {
         markerOptions.styles = typeof markerOptions.styles === "object" ? markerOptions.styles : {};
@@ -1382,10 +1383,11 @@ Marker.prototype.setIconAnchor = function(anchorX, anchorY) {
     this.set('anchor', [anchorX, anchorY]);
     cordova.exec(null, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.setIconAnchor', this.getId(), anchorX, anchorY]);
 };
-Marker.prototype.setCustomMarkerText = function(firstString, secondString) {
+Marker.prototype.updateEstimationMarker = function(firstString, secondString, orientation) {
   this.set('customMarkerFirstString',firstString);
   this.set('customMarkerSecondString',secondString);
-  cordova.exec(null, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.setCustomMarkerText', this.getId(), firstString, secondString]);
+  this.set('mapOrientation',orientation);
+  cordova.exec(null, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.updateEstimationMarker', this.getId(), firstString, secondString, mapOrientation]);
 };
 Marker.prototype.setInfoWindowAnchor = function(anchorX, anchorY) {
     this.set('anchor', [anchorX, anchorY]);
