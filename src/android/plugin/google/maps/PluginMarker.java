@@ -598,6 +598,19 @@ public class PluginMarker extends MyPlugin {
     this.sendNoResult(callbackContext);
   }
 
+  @SuppressWarnings("unused")
+  private void setCustomMarkerText(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
+    float firstString = (float)args.getDouble(2);
+    float secondString = (float)args.getDouble(3);
+    String id = args.getString(1);
+    Marker marker = this.getMarker(id);
+
+    Log.w("TEST","first "+firstString);
+    Log.w("TEST","second "+secondString);
+
+    this.sendNoResult(callbackContext);
+  }  
+
 
   /**
    * Set anchor for the InfoWindow of the marker

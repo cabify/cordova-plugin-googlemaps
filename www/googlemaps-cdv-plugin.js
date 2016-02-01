@@ -1382,6 +1382,11 @@ Marker.prototype.setIconAnchor = function(anchorX, anchorY) {
     this.set('anchor', [anchorX, anchorY]);
     cordova.exec(null, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.setIconAnchor', this.getId(), anchorX, anchorY]);
 };
+Marker.prototype.setCustomMarkerText = function(firstString, secondString) {
+  this.set('customMarkerFirstString',firstString);
+  this.set('customMarkerSecondString',secondString);
+  cordova.exec(null, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.setCustomMarkerText', this.getId(), firstString, secondString]);
+};
 Marker.prototype.setInfoWindowAnchor = function(anchorX, anchorY) {
     this.set('anchor', [anchorX, anchorY]);
     cordova.exec(null, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.setInfoWindowAnchor', this.getId(), anchorX, anchorY]);
