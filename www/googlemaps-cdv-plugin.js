@@ -1387,7 +1387,7 @@ Marker.prototype.updateEstimationMarker = function(firstString, secondString, or
   this.set('customMarkerFirstString',firstString);
   this.set('customMarkerSecondString',secondString);
   this.set('mapOrientation',orientation);
-  cordova.exec(null, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.updateEstimationMarker', this.getId(), firstString, secondString, mapOrientation]);
+  cordova.exec(null, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.updateEstimationMarker', this.getId(), firstString, secondString, orientation]);
 };
 Marker.prototype.setInfoWindowAnchor = function(anchorX, anchorY) {
     this.set('anchor', [anchorX, anchorY]);
