@@ -71,7 +71,7 @@
 
         <!-- Cabify Stuff-->
         <source-file src="src/android/plugin/google/maps/CustomInfoWindowAdapter.java" target-dir="src/plugin/google/maps" />
-        <source-file src="src/android/res/infoWindow/info_window.xml" target-dir="res/layout"/>
+        <source-file src="src/android/res/infoWindow/custom_info_window.xml" target-dir="res/layout"/>
         <source-file src="src/android/res/estimation/drawable-hdpi/ic_destination_marker_right.9.png" target-dir="res/drawable-hdpi"/>
         <source-file src="src/android/res/estimation/drawable-mdpi/ic_destination_marker_left.9.png" target-dir="res/drawable-mdpi"/>
         <source-file src="src/android/res/estimation/drawable-mdpi/ic_destination_marker_right.9.png" target-dir="res/drawable-mdpi"/>

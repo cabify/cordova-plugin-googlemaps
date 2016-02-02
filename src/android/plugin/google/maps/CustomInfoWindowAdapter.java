@@ -25,7 +25,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     public CustomInfoWindowAdapter(Context context) {
 
-        mWindow = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.info_window, null);
+        mWindow = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.custom_info_window, null);
         mInfoWindowText = (TextView) mWindow.findViewById(R.id.title);
     }
 
