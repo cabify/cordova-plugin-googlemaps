@@ -616,6 +616,25 @@ public class PluginMarker extends MyPlugin {
     this.sendNoResult(callbackContext);
   }
 
+  @SuppressWarnings("unused")
+  private void showCustomInfoWindow(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
+    String id = args.getString(1);
+    String firstString = args.getString(2);
+    String secondString = args.getString(3);
+    String markerType = args.getString(4);
+    Marker marker = this.getMarker(id);
+
+
+    if (markerType.equals("infowindow")) {
+      if (map != null && customInfoWindowAdapter == null) {
+        customInfoWindowAdapter = new CustomInfoWindowAdapter(getContext());
+      }
+      map.setInfoWindowAdapter(customInfoWindowAdapter);
+      customInfoWindowAdapter.updateInfoWindowText(marker, firstString, secondString);
+    }
+    this.sendNoResult(callbackContext);
+  }  
+
 
   /**
    * Set anchor for the InfoWindow of the marker

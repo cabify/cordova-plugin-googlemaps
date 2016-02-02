@@ -43,7 +43,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     public void updateInfoWindowText(Marker marker, String firstString, String secondString) {
 
-        mFirstString = firstString;
+        mFirstString = firstString.concat("\n");
         mSecondString = secondString;
 
         if (marker != null && marker.isInfoWindowShown()) {
