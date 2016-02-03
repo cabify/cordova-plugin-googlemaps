@@ -633,7 +633,7 @@ public class PluginMarker extends MyPlugin {
       customInfoWindowAdapter.updateInfoWindowText(marker, firstString, secondString);
     }
     this.sendNoResult(callbackContext);
-  }  
+  }
 
 
   /**
@@ -999,6 +999,7 @@ public class PluginMarker extends MyPlugin {
     TextView t = new TextView(getContext());
     t.setBackgroundResource(leftIndicator ? R.drawable.ic_destination_marker_left
             : R.drawable.ic_destination_marker_right);
+    t.setTextSize(11);
     t.setTextColor(Color.parseColor("#CCCCCC"));
     t.setIncludeFontPadding(false);
 
