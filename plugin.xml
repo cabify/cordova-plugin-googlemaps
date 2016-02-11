@@ -45,6 +45,7 @@
         <framework src="com.google.android.gms:play-services-maps:+" />
         <framework src="com.google.android.gms:play-services-location:+" />
         <framework src="com.google.maps.android:android-maps-utils:0.4" />
+        <framework src="com.squareup.picasso:picasso:2.5.2" />
 
         <!-- plugin src files -->
         <source-file src="src/android/plugin/google/maps/AsyncLicenseInfo.java" target-dir="src/plugin/google/maps" />
@@ -70,6 +71,7 @@
         <source-file src="src/android/plugin/google/maps/PluginAsyncInterface.java" target-dir="src/plugin/google/maps" />
 
         <!-- Cabify Stuff-->
+        <source-file src="src/android/plugin/google/maps/PicassoMarker.java" target-dir="src/plugin/google/maps" />
         <source-file src="src/android/plugin/google/maps/CustomInfoWindowAdapter.java" target-dir="src/plugin/google/maps" />
         <source-file src="src/android/res/infoWindow/custom_info_window.xml" target-dir="res/layout"/>
         <source-file src="src/android/res/estimation/ic_destination_marker_right.9.png" target-dir="res/drawable"/>

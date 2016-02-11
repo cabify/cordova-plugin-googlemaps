@@ -40,8 +40,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 public class PluginMarker extends MyPlugin {
+
+  private PicassoMarker picassoMarker;
+  private AsyncLoadImageInterface asyncLoadImageInterface;
 
   private enum Animation {
     DROP,
@@ -368,6 +373,7 @@ public class PluginMarker extends MyPlugin {
       public void onPostExecute(Object object) {
         callbackContext.success();
       }
+
       @Override
       public void onError(String errorMsg) {
         callbackContext.error(errorMsg);
@@ -918,7 +924,7 @@ public class PluginMarker extends MyPlugin {
         height = sizeInfo.getInt("height", height);
       }
 
-      AsyncLoadImage task = new AsyncLoadImage(width, height, new AsyncLoadImageInterface() {
+      asyncLoadImageInterface = new AsyncLoadImageInterface() {
 
         @Override
         public void onPostExecute(Bitmap image) {
@@ -944,7 +950,7 @@ public class PluginMarker extends MyPlugin {
             }
           }
 
-          // Check if we have a fucking info window to paint
+
           // Insert here our estimation marker
           if (iconProperty.containsKey("markerType") && iconProperty.getString("markerType") != null
                   && iconProperty.getString("markerType").equals("infowindow")) {
@@ -952,7 +958,7 @@ public class PluginMarker extends MyPlugin {
             if (iconProperty.containsKey("firstString") && iconProperty.containsKey("secondString")) {
               String firstString = iconProperty.getString("firstString");
               String secondString = iconProperty.getString("secondString");
-              if(map != null){
+              if (map != null) {
                 customInfoWindowAdapter = new CustomInfoWindowAdapter(getContext());
                 map.setInfoWindowAdapter(customInfoWindowAdapter);
                 customInfoWindowAdapter.updateInfoWindowText(marker, firstString, secondString);
@@ -969,12 +975,21 @@ public class PluginMarker extends MyPlugin {
             }
           }
 
-          image.recycle();
           callback.onPostExecute(marker);
         }
 
-      });
-      task.execute(iconUrl);
+      };
+
+      picassoMarker = new PicassoMarker(callback, asyncLoadImageInterface);
+      RequestCreator requestCreator = Picasso.with(this.cordova.getActivity())
+              .load(iconUrl);
+
+      if(width != -1 || height != -1){
+        requestCreator = requestCreator.resize(width,height);
+      }
+
+      requestCreator.into(picassoMarker);
+
     }
   }
 
