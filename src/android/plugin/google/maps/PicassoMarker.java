@@ -45,12 +45,7 @@ public class PicassoMarker implements Target {
 
     @Override
     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-
-        float density = Resources.getSystem().getDisplayMetrics().density;
-        int newHeight = (int) (bitmap.getHeight() * density);
-        int newWidth = (int) (bitmap.getWidth() * density);
-        Bitmap b = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, false);
-        asyncLoadImageInterface.onPostExecute(b);
+        asyncLoadImageInterface.onPostExecute(bitmap);
     }
 
     @Override
