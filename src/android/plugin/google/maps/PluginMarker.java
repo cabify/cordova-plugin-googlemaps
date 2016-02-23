@@ -1022,8 +1022,12 @@ public class PluginMarker extends MyPlugin {
     iconFactory.setContentView(t);
 
     Bitmap sampleBitmap = iconFactory.makeIcon();
-    // Tweak the incoming text to show it in two lines
-    first = first.concat("\n");
+    if (first != null && !first.equals("null")) {
+      // Tweak the incoming text to show it in two lines
+      first = first.concat("\n");
+    } else {
+      first = "";
+    }
     Spannable wordtoSpan = new SpannableString(first + second);
 
     wordtoSpan.setSpan(new ForegroundColorSpan(Color.parseColor("#FFFFFF")), first.length(),
