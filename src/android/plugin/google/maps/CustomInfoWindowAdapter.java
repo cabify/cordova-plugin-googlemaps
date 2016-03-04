@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cabify.rider.R;
+import plugin.google.maps.FakedR;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
@@ -25,8 +25,8 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     public CustomInfoWindowAdapter(Context context) {
 
-        mWindow = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.custom_info_window, null);
-        mInfoWindowText = (TextView) mWindow.findViewById(R.id.title);
+        mWindow = (LinearLayout) LayoutInflater.from(context).inflate(FakedR.getId(context,"layout","custom_info_window"),null);
+        mInfoWindowText = (TextView) mWindow.findViewById(FakedR.getId(context,"id","title"));
     }
 
     @Override

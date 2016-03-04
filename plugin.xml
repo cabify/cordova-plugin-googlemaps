@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<plugin id="plugin.google.maps" version="1.3.9" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<plugin id="plugin.google.maps.cabify" version="1.3.9" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>phonegap-googlemaps-plugin</name>
     <js-module name="phonegap-googlemaps-plugin" src="www/googlemaps-cdv-plugin.js">
         <clobbers target="plugin.google.maps" />
@@ -71,6 +71,7 @@
         <source-file src="src/android/plugin/google/maps/PluginAsyncInterface.java" target-dir="src/plugin/google/maps" />
 
         <!-- Cabify Stuff-->
+        <source-file src="src/android/plugin/google/maps/FakedR.java" target-dir="src/plugin/google/maps" />
         <source-file src="src/android/plugin/google/maps/PicassoMarker.java" target-dir="src/plugin/google/maps" />
         <source-file src="src/android/plugin/google/maps/CustomInfoWindowAdapter.java" target-dir="src/plugin/google/maps" />
         <source-file src="src/android/res/infoWindow/custom_info_window.xml" target-dir="res/layout"/>

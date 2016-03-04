@@ -32,7 +32,7 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 
-import com.cabify.rider.R;
+import plugin.google.maps.FakedR;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -1012,8 +1012,8 @@ public class PluginMarker extends MyPlugin {
     IconGenerator iconFactory = new IconGenerator(getContext());
 
     TextView t = new TextView(getContext());
-    t.setBackgroundResource(leftIndicator ? R.drawable.ic_destination_marker_left
-            : R.drawable.ic_destination_marker_right);
+    t.setBackgroundResource(leftIndicator ? FakedR.getId(getContext(),"drawable","ic_destination_marker_left")
+            : FakedR.getId(getContext(),"drawable","ic_destination_marker_right"));
     t.setTextSize(11);
     t.setTextColor(Color.parseColor("#CCCCCC"));
     t.setIncludeFontPadding(false);
