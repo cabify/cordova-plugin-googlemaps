@@ -75,8 +75,45 @@
         <source-file src="src/android/plugin/google/maps/PicassoMarker.java" target-dir="src/plugin/google/maps" />
         <source-file src="src/android/plugin/google/maps/CustomInfoWindowAdapter.java" target-dir="src/plugin/google/maps" />
         <source-file src="src/android/res/infoWindow/custom_info_window.xml" target-dir="res/layout"/>
-        <source-file src="src/android/res/estimation/ic_destination_marker_right.9.png" target-dir="res/drawable"/>
-        <source-file src="src/android/res/estimation/ic_destination_marker_left.9.png" target-dir="res/drawable"/>
+
+        <source-file src="src/android/res/current_location.png" target-dir="res/drawable"/>
+
+        <source-file src="src/android/res/estimation/drawable-hdpi/ic_marker_destination_right.9.png" target-dir="res/drawable-hdpi"/>
+        <source-file src="src/android/res/estimation/drawable-mdpi/ic_marker_destination_right.9.png" target-dir="res/drawable-mdpi"/>
+        <source-file src="src/android/res/estimation/drawable-xhdpi/ic_marker_destination_right.9.png" target-dir="res/drawable-xhdpi"/>
+        <source-file src="src/android/res/estimation/drawable-xxhdpi/ic_marker_destination_right.9.png" target-dir="res/drawable-xxhdpi"/>
+        <source-file src="src/android/res/estimation/drawable-xxxhdpi/ic_marker_destination_right.9.png" target-dir="res/drawable-xxxhdpi"/>
+
+        <source-file src="src/android/res/estimation/drawable-hdpi/ic_marker_destination_left.9.png" target-dir="res/drawable-hdpi"/>
+        <source-file src="src/android/res/estimation/drawable-mdpi/ic_marker_destination_left.9.png" target-dir="res/drawable-mdpi"/>
+        <source-file src="src/android/res/estimation/drawable-xhdpi/ic_marker_destination_left.9.png" target-dir="res/drawable-xhdpi"/>
+        <source-file src="src/android/res/estimation/drawable-xxhdpi/ic_marker_destination_left.9.png" target-dir="res/drawable-xxhdpi"/>
+        <source-file src="src/android/res/estimation/drawable-xxxhdpi/ic_marker_destination_left.9.png" target-dir="res/drawable-xxxhdpi"/>
+
+        <source-file src="src/android/res/markers/drawable-hdpi/location.png" target-dir="res/drawable-hdpi"/>
+        <source-file src="src/android/res/markers/drawable-mdpi/location.png" target-dir="res/drawable-mdpi"/>
+        <source-file src="src/android/res/markers/drawable-xhdpi/location.png" target-dir="res/drawable-xhdpi"/>
+        <source-file src="src/android/res/markers/drawable-xxhdpi/location.png" target-dir="res/drawable-xxhdpi"/>
+        <source-file src="src/android/res/markers/drawable-xxxhdpi/location.png" target-dir="res/drawable-xxxhdpi"/>
+
+        <source-file src="src/android/res/markers/drawable-hdpi/start.png" target-dir="res/drawable-hdpi"/>
+        <source-file src="src/android/res/markers/drawable-mdpi/start.png" target-dir="res/drawable-mdpi"/>
+        <source-file src="src/android/res/markers/drawable-xhdpi/start.png" target-dir="res/drawable-xhdpi"/>
+        <source-file src="src/android/res/markers/drawable-xxhdpi/start.png" target-dir="res/drawable-xxhdpi"/>
+        <source-file src="src/android/res/markers/drawable-xxxhdpi/start.png" target-dir="res/drawable-xxxhdpi"/>
+
+        <source-file src="src/android/res/markers/drawable-hdpi/end.png" target-dir="res/drawable-hdpi"/>
+        <source-file src="src/android/res/markers/drawable-mdpi/end.png" target-dir="res/drawable-mdpi"/>
+        <source-file src="src/android/res/markers/drawable-xhdpi/end.png" target-dir="res/drawable-xhdpi"/>
+        <source-file src="src/android/res/markers/drawable-xxhdpi/end.png" target-dir="res/drawable-xxhdpi"/>
+        <source-file src="src/android/res/markers/drawable-xxxhdpi/end.png" target-dir="res/drawable-xxxhdpi"/>        
+
+        <source-file src="src/android/res/markers/drawable-hdpi/transparent_marker.png" target-dir="res/drawable-hdpi"/>
+        <source-file src="src/android/res/markers/drawable-mdpi/transparent_marker.png" target-dir="res/drawable-mdpi"/>
+        <source-file src="src/android/res/markers/drawable-xhdpi/transparent_marker.png" target-dir="res/drawable-xhdpi"/>
+        <source-file src="src/android/res/markers/drawable-xxhdpi/transparent_marker.png" target-dir="res/drawable-xxhdpi"/>
+        <source-file src="src/android/res/markers/drawable-xxxhdpi/transparent_marker.png" target-dir="res/drawable-xxxhdpi"/>
+
         <source-file src="src/android/res/infoWindow/drawable-hdpi/infowindow.9.png" target-dir="res/drawable-hdpi"/>
         <source-file src="src/android/res/infoWindow/drawable-mdpi/infowindow.9.png" target-dir="res/drawable-mdpi"/>
         <source-file src="src/android/res/infoWindow/drawable-xhdpi/infowindow.9.png" target-dir="res/drawable-xhdpi"/>

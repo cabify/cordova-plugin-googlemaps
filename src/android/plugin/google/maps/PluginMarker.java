@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -27,6 +28,8 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
@@ -799,10 +802,8 @@ public class PluginMarker extends MyPlugin {
                 Log.w("GoogleMaps", "icon is not found (" + iconUrl + ")");
               }
             }
-          } else {
-            if (iconUrl.indexOf("file:///android_asset/") == 0) {
-              iconUrl = iconUrl.replace("file:///android_asset/", "");
-            }
+          } else if (iconUrl.indexOf("file:///android_asset/") == 0) {
+            iconUrl = iconUrl.replace("file:///android_asset/", "");
             if (iconUrl.indexOf("./") == 0) {
               iconUrl = iconUrl.replace("./", "www/");
             }
@@ -816,7 +817,18 @@ public class PluginMarker extends MyPlugin {
               callback.onPostExecute(marker);
               return null;
             }
+          } else {
+            if (iconUrl.indexOf("cabify:///marker/") == 0) {
+              iconUrl = iconUrl.replace("cabify:///marker/", "");
+            }
+            int targetResourceId = FakedR.getId(getContext(),"drawable",iconUrl);
+
+            if(targetResourceId != 0){
+              image = BitmapFactory.decodeResource(PluginMarker.this.cordova.getActivity().getResources(), targetResourceId);
+            }
+
           }
+
           if (image == null) {
             callback.onPostExecute(marker);
             return null;
@@ -838,10 +850,6 @@ public class PluginMarker extends MyPlugin {
                 image = PluginUtil.resizeBitmap(image, width, height);
               }
             }
-          }
-
-          if (isResized == false) {
-            image = PluginUtil.scaleBitmapForDevice(image);
           }
           return image;
         }
@@ -1012,8 +1020,8 @@ public class PluginMarker extends MyPlugin {
     IconGenerator iconFactory = new IconGenerator(getContext());
 
     TextView t = new TextView(getContext());
-    t.setBackgroundResource(leftIndicator ? FakedR.getId(getContext(),"drawable","ic_destination_marker_left")
-            : FakedR.getId(getContext(),"drawable","ic_destination_marker_right"));
+    t.setBackgroundResource(leftIndicator ? FakedR.getId(getContext(),"drawable","ic_marker_destination_left")
+            : FakedR.getId(getContext(),"drawable","ic_marker_destination_right"));
     t.setTextSize(11);
     t.setTextColor(Color.parseColor("#CCCCCC"));
     t.setIncludeFontPadding(false);
