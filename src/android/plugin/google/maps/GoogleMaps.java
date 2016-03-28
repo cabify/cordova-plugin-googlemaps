@@ -192,9 +192,9 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
             e.printStackTrace();
           }
        */
-        if (Build.VERSION.SDK_INT >= 21 || "org.xwalk.core.XWalkView".equals(view.getClass().getName())){
-          view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        }
+
+        view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+
 
         root.setBackgroundColor(Color.WHITE);
         if (VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
@@ -587,6 +587,7 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
           if (args.length() == 3) {
             GoogleMaps.this.mapDivLayoutJSON = args.getJSONObject(1);
             mPluginLayout.attachMyView(mapView);
+            Log.e("client", "-- calling GoogleMaps.this.resizeMap");
             GoogleMaps.this.resizeMap(args, callbackContext);
           }
           callbackContext.success();
@@ -784,33 +785,45 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
       return;
     }
     mapDivLayoutJSON = args.getJSONObject(args.length() - 2);
-    JSONArray HTMLs = args.getJSONArray(args.length() - 1);
-    JSONObject elemInfo, elemSize;
-    String elemId;
-    float divW, divH, divLeft, divTop;
-    if (mPluginLayout == null) {
-      this.sendNoResult(callbackContext);
-      return;
-    }
+    final JSONArray HTMLs = args.getJSONArray(args.length() - 1);
+
     this.mPluginLayout.clearHTMLElement();
 
-    for (int i = 0; i < HTMLs.length(); i++) {
-      elemInfo = HTMLs.getJSONObject(i);
-      try {
-        elemId = elemInfo.getString("id");
-        elemSize = elemInfo.getJSONObject("size");
+    cordova.getThreadPool().execute(new Runnable() {
 
-        divW = contentToView(elemSize.getLong("width"));
-        divH = contentToView(elemSize.getLong("height"));
-        divLeft = contentToView(elemSize.getLong("left"));
-        divTop = contentToView(elemSize.getLong("top"));
-        mPluginLayout.putHTMLElement(elemId, divLeft, divTop, divLeft + divW, divTop + divH);
-      } catch (Exception e){
-        e.printStackTrace();
+      @Override
+      public void run(){
+
+        try {
+          JSONObject elemInfo, elemSize;
+          String elemId;
+          float divW, divH, divLeft, divTop;
+          for (int i = 0; i < HTMLs.length(); i++) {
+            elemInfo = HTMLs.getJSONObject(i);
+            try {
+              elemId = elemInfo.getString("id");
+              elemSize = elemInfo.getJSONObject("size");
+
+              divW = contentToView(elemSize.getLong("width"));
+              divH = contentToView(elemSize.getLong("height"));
+              divLeft = contentToView(elemSize.getLong("left"));
+              divTop = contentToView(elemSize.getLong("top"));
+              mPluginLayout.putHTMLElement(elemId, divLeft, divTop, divLeft + divW, divTop + divH);
+            } catch (Exception e){
+              e.printStackTrace();
+            }
+          }
+        } catch (Exception e){}
+        //mPluginLayout.inValidate();
+        cordova.getActivity().runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            updateMapViewLayout();
+          }
+        });
       }
-    }
-    //mPluginLayout.inValidate();
-    updateMapViewLayout();
+    });
+
     this.sendNoResult(callbackContext);
   }
 

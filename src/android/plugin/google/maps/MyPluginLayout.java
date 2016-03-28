@@ -25,6 +25,7 @@ import android.widget.AbsoluteLayout;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.util.Log;
 
 @SuppressWarnings("deprecation")
 public class MyPluginLayout extends FrameLayout  {
@@ -44,7 +45,7 @@ public class MyPluginLayout extends FrameLayout  {
   private boolean isClickable = true;
   private Map<String, RectF> HTMLNodes = new HashMap<String, RectF>();
   private Activity mActivity = null;
-  
+
   @SuppressLint("NewApi")
   public MyPluginLayout(View view, Activity activity) {
     super(view.getContext());
@@ -52,11 +53,12 @@ public class MyPluginLayout extends FrameLayout  {
     this.view = view;
     this.root = (ViewGroup) view.getParent();
     this.context = view.getContext();
-    if (VERSION.SDK_INT >= 21 || "org.xwalk.core.XWalkView".equals(view.getClass().getName())) {
-      view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-    }
+    Log.e("client", view.getClass().getName() );
+
+    view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+
     frontLayer = new FrontLayerLayout(this.context);
-    
+
     scrollView = new ScrollView(this.context);
     scrollView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
@@ -65,18 +67,18 @@ public class MyPluginLayout extends FrameLayout  {
     backgroundView.setVerticalScrollBarEnabled(false);
     backgroundView.setHorizontalScrollBarEnabled(false);
     backgroundView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 9999));
-    
+
     scrollFrameLayout = new FrameLayout(this.context);
     scrollFrameLayout.addView(backgroundView);
     scrollFrameLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-    
+
     scrollView.setHorizontalScrollBarEnabled(false);
     scrollView.setVerticalScrollBarEnabled(false);
-    
+
     this.touchableWrapper = new TouchableWrapper(this.context);
-    
+
   }
-  
+
   public void setDrawingRect(float left, float top, float right, float bottom) {
     this.drawRect.left = left;
     this.drawRect.top = top;
@@ -86,7 +88,7 @@ public class MyPluginLayout extends FrameLayout  {
       this.inValidate();
     }
   }
-  
+
   public void putHTMLElement(String domId, float left, float top, float right, float bottom) {
     RectF rect = null;
     if (this.HTMLNodes.containsKey(domId)) {
@@ -122,7 +124,7 @@ public class MyPluginLayout extends FrameLayout  {
       this.inValidate();
     }
   }
-  
+
   public void updateViewPosition() {
     if (myView == null) {
       return;
@@ -152,7 +154,7 @@ public class MyPluginLayout extends FrameLayout  {
       params.leftMargin = (int) this.drawRect.left;
       params.gravity = Gravity.TOP;
       myView.setLayoutParams(params);
-    } 
+    }
     if (android.os.Build.VERSION.SDK_INT < 11) {
       // Force redraw
       myView.requestLayout();
@@ -177,37 +179,36 @@ public class MyPluginLayout extends FrameLayout  {
     root.removeView(this);
     this.removeView(frontLayer);
     frontLayer.removeView(view);
-    
+
     scrollFrameLayout.removeView(myView);
     myView.removeView(this.touchableWrapper);
-    
+
     this.removeView(this.scrollView);
     this.scrollView.removeView(scrollFrameLayout);
     if (orgLayoutParams != null) {
       myView.setLayoutParams(orgLayoutParams);
     }
-    
+
     root.addView(view);
     myView = null;
     mActivity.getWindow().getDecorView().requestFocus();
   }
-  
+
   public void attachMyView(ViewGroup pluginView) {
     view.setBackgroundColor(Color.TRANSPARENT);
-    if("org.xwalk.core.XWalkView".equals(view.getClass().getName())
-        || "org.crosswalk.engine.XWalkCordovaView".equals(view.getClass().getName())) {
-      try {
-        /* view.setZOrderOnTop(true)
-         * Called just in time as with root.setBackground(...) the color
-         * come in front and take the whoel screen */
-        view.getClass().getMethod("setZOrderOnTop", boolean.class)
-          .invoke(view, true);
-      }
-      catch(Exception e) {}
+
+    try {
+      /* view.setZOrderOnTop(true)
+       * Called just in time as with root.setBackground(...) the color
+       * come in front and take the whoel screen */
+      view.getClass().getMethod("setZOrderOnTop", boolean.class)
+        .invoke(view, true);
     }
+    catch(Exception e) {}
+
     scrollView.setHorizontalScrollBarEnabled(false);
     scrollView.setVerticalScrollBarEnabled(false);
-    
+
     scrollView.scrollTo(view.getScrollX(), view.getScrollY());
     if (myView == pluginView) {
       return;
@@ -215,7 +216,7 @@ public class MyPluginLayout extends FrameLayout  {
       this.detachMyView();
     }
     //backgroundView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (view.getContentHeight() * view.getScale() + view.getHeight())));
-    
+
     myView = pluginView;
     ViewGroup.LayoutParams lParams = myView.getLayoutParams();
     orgLayoutParams = null;
@@ -225,26 +226,26 @@ public class MyPluginLayout extends FrameLayout  {
     root.removeView(view);
     scrollView.addView(scrollFrameLayout);
     this.addView(scrollView);
-    
+
     pluginView.addView(this.touchableWrapper);
     scrollFrameLayout.addView(pluginView);
-    
+
     frontLayer.addView(view);
     this.addView(frontLayer);
     root.addView(this);
     mActivity.getWindow().getDecorView().requestFocus();
-    
+
     scrollView.setHorizontalScrollBarEnabled(true);
     scrollView.setVerticalScrollBarEnabled(true);
   }
-  
+
   public void setPageSize(int width, int height) {
     android.view.ViewGroup.LayoutParams lParams = backgroundView.getLayoutParams();
     lParams.width = width;
     lParams.height = height;
     backgroundView.setLayoutParams(lParams);
   }
-  
+
   public void scrollTo(int x, int y) {
     this.scrollView.scrollTo(x, y);
   }
@@ -253,19 +254,19 @@ public class MyPluginLayout extends FrameLayout  {
   public void setBackgroundColor(int color) {
     this.backgroundView.setBackgroundColor(color);
   }
-  
+
   public void inValidate() {
     this.frontLayer.invalidate();
   }
-  
+
 
   private class FrontLayerLayout extends FrameLayout {
-    
+
     public FrontLayerLayout(Context context) {
       super(context);
       this.setWillNotDraw(false);
     }
-    
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
       if (isClickable == false || myView == null || myView.getVisibility() != View.VISIBLE) {
@@ -280,7 +281,7 @@ public class MyPluginLayout extends FrameLayout  {
       isScrolling = (contains == false && action == MotionEvent.ACTION_DOWN) ? true : isScrolling;
       isScrolling = (action == MotionEvent.ACTION_UP) ? false : isScrolling;
       contains = isScrolling == true ? false : contains;
-      
+
       if (contains) {
         // Is the touch point on any HTML elements?
         Set<Entry<String, RectF>> elements = MyPluginLayout.this.HTMLNodes.entrySet();
@@ -312,7 +313,7 @@ public class MyPluginLayout extends FrameLayout  {
       int width = canvas.getWidth();
       int height = canvas.getHeight();
       int scrollY = view.getScrollY();
-      
+
       Paint paint = new Paint();
       paint.setColor(Color.argb(100, 0, 255, 0));
       if (isClickable == false) {
@@ -323,10 +324,10 @@ public class MyPluginLayout extends FrameLayout  {
       canvas.drawRect(0, drawRect.top, drawRect.left, drawRect.bottom, paint);
       canvas.drawRect(drawRect.right, drawRect.top, width, drawRect.bottom, paint);
       canvas.drawRect(0, drawRect.bottom, width, height, paint);
-      
-      
+
+
       paint.setColor(Color.argb(100, 255, 0, 0));
-      
+
       Set<Entry<String, RectF>> elements = MyPluginLayout.this.HTMLNodes.entrySet();
       Iterator<Entry<String, RectF>> iterator = elements.iterator();
       Entry <String, RectF> entry;
@@ -342,9 +343,9 @@ public class MyPluginLayout extends FrameLayout  {
       }
     }
   }
-  
+
   private class TouchableWrapper extends FrameLayout {
-    
+
     public TouchableWrapper(Context context) {
       super(context);
     }
@@ -357,5 +358,5 @@ public class MyPluginLayout extends FrameLayout  {
       }
       return super.dispatchTouchEvent(event);
     }
-  } 
+  }
 }
