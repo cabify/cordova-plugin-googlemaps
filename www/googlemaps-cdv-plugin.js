@@ -2612,7 +2612,7 @@ function getAllChildren(root) {
     var allElements = Array.prototype.slice.call(document.querySelectorAll('*'));
     var notClickableElements = Array.prototype.slice.call(document.querySelectorAll('[data-clickable="false"]'));
     notClickableElements.push(root)
-    var clickableElements = allElements..filter(function(i) {return notClickableElements.indexOf(i) < 0;});
+    var clickableElements = allElements.filter(function(i) {return notClickableElements.indexOf(i) < 0;});
 
     for (var i = 0; i < clickableElements.length; i++) {
         node = clickableElements[i];
