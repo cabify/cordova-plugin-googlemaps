@@ -2607,31 +2607,26 @@ window.addEventListener("orientationchange", function() {
 function getAllChildren(root) {
     var list = [];
     var clickable;
-    var style, displayCSS, opacityCSS, visibilityCSS;
-    var search = function(node) {
-        while (node != null) {
-            if (node.nodeType == 1) {
-                style = window.getComputedStyle(node);
-                visibilityCSS = style.getPropertyValue('visibility');
-                displayCSS = style.getPropertyValue('display');
-                opacityCSS = style.getPropertyValue('opacity');
-                if (displayCSS !== "none" && opacityCSS > 0 && visibilityCSS != "hidden") {
-                    clickable = node.getAttribute("data-clickable");
-                    if (clickable &&
-                        clickable.toLowerCase() === "false" &&
-                        node.hasChildNodes()) {
-                        Array.prototype.push.apply(list, getAllChildren(node));
-                    } else {
-                        list.push(node);
-                    }
-                }
-            }
-            node = node.nextSibling;
+    var style, displayCSS, opacityCSS, visibilityCSS, node;
+
+    var allElements = Array.prototype.slice.call(document.querySelectorAll('*'));
+    var notClickableElements = Array.prototype.slice.call(document.querySelectorAll('[data-clickable="false"]'));
+    notClickableElements.push(root)
+    var clickableElements = allElements..filter(function(i) {return notClickableElements.indexOf(i) < 0;});
+
+    for (var i = 0; i < clickableElements.length; i++) {
+        node = clickableElements[i];
+        if (node.nodeType == 1){
+          style = window.getComputedStyle(node);
+          visibilityCSS = style.getPropertyValue('visibility');
+          displayCSS = style.getPropertyValue('display');
+          opacityCSS = style.getPropertyValue('opacity');
+          if (displayCSS !== "none" && opacityCSS > 0 && visibilityCSS != "hidden") {
+            list.push(node);
+          }
         }
-    };
-    for (var i = 0; i < root.childNodes.length; i++) {
-        search(root.childNodes[i]);
     }
+
     return list;
 }
 
