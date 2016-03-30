@@ -2609,10 +2609,8 @@ function getAllChildren(root) {
     var clickable;
     var style, displayCSS, opacityCSS, visibilityCSS, node;
 
-    var allElements = Array.prototype.slice.call(document.querySelectorAll('*'));
-    var notClickableElements = Array.prototype.slice.call(document.querySelectorAll('[data-clickable="false"]'));
-    notClickableElements.push(root)
-    var clickableElements = allElements.filter(function(i) {return notClickableElements.indexOf(i) < 0;});
+    var allClickableElements = Array.prototype.slice.call(document.querySelectorAll(':not([data-clickable="false"])'));
+    var clickableElements =  allClickableElements.filter(function(i) {return i != root;});
 
     for (var i = 0; i < clickableElements.length; i++) {
         node = clickableElements[i];
