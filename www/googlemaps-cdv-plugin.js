@@ -57,35 +57,43 @@ var BaseClass = function() {
     };
     self.addEventListener = self.on;
 
-    self.off = function(eventName, callback) {
-        var i;
-        if (typeof eventName === "string") {
-            if (eventName in _listeners) {
+    self.off = function(eventNameOrForce, callback) {
+        var eventName, force, i;
 
-                if (typeof callback === "function") {
-                    for (i = 0; i < _listeners[eventName].length; i++) {
-                        if (_listeners[eventName][i].callback === callback) {
-                            document.removeEventListener(eventName, _listeners[eventName][i].listener);
-                            _listeners[eventName].splice(i, 1);
-                            break;
-                        }
-                    }
-                } else {
-                    for (i = 0; i < _listeners[eventName].length; i++) {
+        if (typeof eventNameOrForce === "string") eventName = eventNameOrForce;
+        else force = eventNameOrForce;
+
+
+        if (eventName && (eventName in _listeners) ) {
+            if (typeof callback === "function") {
+                for (i = 0; i < _listeners[eventName].length; i++) {
+                    if (_listeners[eventName][i].callback === callback) {
                         document.removeEventListener(eventName, _listeners[eventName][i].listener);
+                        _listeners[eventName].splice(i, 1);
+                        break;
                     }
-                    delete _listeners[eventName];
                 }
+            } else {
+                for (i = 0; i < _listeners[eventName].length; i++) {
+                    document.removeEventListener(eventName, _listeners[eventName][i].listener);
+                }
+                delete _listeners[eventName];
             }
+        } else if (force && force == true){
+            var eventNames = Object.keys(_listeners);
+            var j;
+            for (i = 0; i < eventNames.length; i++) {
+                eventName = eventNames[i];
+                for (j = 0; j < _listeners[eventName].length; j++) { document.removeEventListener(eventName, _listeners[eventName][j].listener); }
+            }
+            _listeners = {};
         } else {
             //Remove all event listeners except 'keepWatching_changed'
             var eventNames = Object.keys(_listeners);
             for (i = 0; i < eventNames.length; i++) {
                 eventName = eventNames[i];
                 if ( eventName !== 'keepWatching_changed' ) {
-                    for (var j = 0; j < _listeners[eventName].length; j++) {
-                        document.removeEventListener(eventName, _listeners[eventName][j].listener);
-                    }
+                    for (var j = 0; j < _listeners[eventName].length; j++) { document.removeEventListener(eventName, _listeners[eventName][j].listener); }
                     delete _listeners[eventName];
                 }
             }
@@ -1344,14 +1352,13 @@ Marker.prototype.setAnimation = function(animation, callback) {
 
 Marker.prototype.remove = function(callback) {
     var self = this;
-    self.set("keepWatching", false);
     delete MARKERS[this.id];
     cordova.exec(function() {
         if (typeof callback === "function") {
             callback.call(self);
         }
     }, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.remove', this.getId()]);
-    this.off();
+    this.off(true);
 };
 Marker.prototype.setDisableAutoPan = function(disableAutoPan) {
     disableAutoPan = parseBoolean(disableAutoPan);
