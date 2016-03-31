@@ -11,10 +11,10 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:maxWidth="120dp"
+        android:maxWidth="100dp"
         android:layout_gravity="center_horizontal"
         android:textColor="#FFFFFF"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:gravity="center"
         tools:text="Distancia \n 200m"/>
 </LinearLayout>
