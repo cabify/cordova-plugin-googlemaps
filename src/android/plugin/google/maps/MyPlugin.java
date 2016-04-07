@@ -28,12 +28,12 @@ public class MyPlugin extends CordovaPlugin implements MyPluginInterface  {
   public GoogleMaps mapCtrl = null;
   public GoogleMap map = null;
   public float density = Resources.getSystem().getDisplayMetrics().density;
-  
+
   public void setMapCtrl(GoogleMaps mapCtrl) {
     this.mapCtrl = mapCtrl;
     this.map = mapCtrl.map;
   }
-  
+
   @SuppressLint("UseSparseArrays")
   @Override
   public void initialize(CordovaInterface cordova, final CordovaWebView webView) {
@@ -54,7 +54,7 @@ public class MyPlugin extends CordovaPlugin implements MyPluginInterface  {
       return false;
     }
   }
-  
+
   protected Circle getCircle(String id) {
     return (Circle)this.objects.get(id);
   }
@@ -93,7 +93,7 @@ public class MyPlugin extends CordovaPlugin implements MyPluginInterface  {
   protected void setBoolean(String methodName, String id, Boolean value, final CallbackContext callbackContext) throws JSONException {
     this.setValue(methodName, boolean.class, id, value, callbackContext);
   }
-  
+
   private void setValue(String methodName, Class<?> methodClass, String id, Object value, final CallbackContext callbackContext) throws JSONException {
     Object object = this.objects.get(id);
     try {
@@ -108,7 +108,7 @@ public class MyPlugin extends CordovaPlugin implements MyPluginInterface  {
   public void clear() {
     this.objects.clear();
   }
-  
+
   protected void sendNoResult(CallbackContext callbackContext) {
     PluginResult pluginResult = new PluginResult(PluginResult.Status.NO_RESULT);
     pluginResult.setKeepCallback(true);

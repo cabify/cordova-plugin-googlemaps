@@ -127,6 +127,7 @@ public class MyPluginLayout extends FrameLayout  {
 
   public void updateViewPosition() {
     if (myView == null) {
+      Log.e("client", "updateViewPosition myView is null");
       return;
     }
     ViewGroup.LayoutParams lParams = this.myView.getLayoutParams();
@@ -155,10 +156,10 @@ public class MyPluginLayout extends FrameLayout  {
       params.gravity = Gravity.TOP;
       myView.setLayoutParams(params);
     }
-    if (android.os.Build.VERSION.SDK_INT < 11) {
-      // Force redraw
-      myView.requestLayout();
-    }
+
+    // Always force a redraw
+    myView.requestLayout();
+
     this.frontLayer.invalidate();
   }
 
@@ -191,6 +192,23 @@ public class MyPluginLayout extends FrameLayout  {
 
     root.addView(view);
     myView = null;
+    mActivity.getWindow().getDecorView().requestFocus();
+  }
+
+  public void forceZOrderOnTop(){
+    if (myView == null) {
+      return;
+    }
+
+    view.setBackgroundColor(Color.TRANSPARENT);
+    try {
+      /* view.setZOrderOnTop(true)
+       * Called just in time as with root.setBackground(...) the color
+       * come in front and take the whoel screen */
+      view.getClass().getMethod("setZOrderOnTop", boolean.class)
+        .invoke(view, true);
+    }
+    catch(Exception e) {}
     mActivity.getWindow().getDecorView().requestFocus();
   }
 

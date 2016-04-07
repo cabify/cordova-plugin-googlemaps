@@ -749,6 +749,18 @@ App.prototype.isAvailable = function(callback) {
     }, PLUGIN_NAME, 'isAvailable', ['']);
 };
 
+App.prototype.isVisible = function(callback){
+  cordova.exec(function() {
+      if (typeof callback === "function") {
+          callback.call(self, true);
+      }
+  }, function(message) {
+      if (typeof callback === "function") {
+          callback.call(self, false, message);
+      }
+  }, PLUGIN_NAME, 'isVisible', ['']);
+};
+
 App.prototype.toDataURL = function(callback) {
     var self = this;
     cordova.exec(function(image) {
@@ -883,6 +895,10 @@ App.prototype.setDiv = function(div) {
     }
     cordova.exec(null, self.errorHandler, PLUGIN_NAME, 'setDiv', args);
 };
+
+App.prototype.forceRender = function(){
+  cordova.exec(null, self.errorHandler, PLUGIN_NAME, 'forceRender', []);
+}
 
 /**
  * Return the visible region of the map.
