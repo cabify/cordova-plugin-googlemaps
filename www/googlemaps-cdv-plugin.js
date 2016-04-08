@@ -831,7 +831,6 @@ App.prototype.setDiv = function(div) {
 
     if (isDom(div)) {
         var children = getAllChildren(div);
-        var newChildren = newGetAllChildren(div);
         self.set("div", div);
         args.push(getDivRect(div));
         var elements = [];
