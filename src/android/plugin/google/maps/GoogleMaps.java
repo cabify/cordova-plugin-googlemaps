@@ -300,6 +300,20 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
     }
   }
 
+  @SuppressWarnings("unused")
+  private void forceRender(JSONArray args, CallbackContext callbackContext) throws JSONException {
+    mPluginLayout.detachMyView();
+    mPluginLayout.attachMyView(mapView);
+    updateMapViewLayout();
+    callbackContext.success();
+  }
+
+  @SuppressWarnings("unused")
+  private void isVisible(JSONArray args, CallbackContext callbackContext) throws JSONException {
+    boolean visible = mapView.getVisibility() != View.VISIBLE;
+    callbackContext.success("map visible status: " + visible);
+  }
+
   /**
    * Set visibility of the map
    * @param args
