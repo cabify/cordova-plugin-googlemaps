@@ -506,6 +506,7 @@ App.prototype.animateCamera = function(cameraPosition, callback) {
     setTimeout(function() {
         cordova.exec(function() {
             if (typeof callback === "function") {
+                shouldResizeMap = true;
                 callback.call(self);
             }
         }, self.errorHandler, PLUGIN_NAME, 'exec', ['Map.animateCamera', cameraPosition]);
@@ -546,6 +547,7 @@ App.prototype.moveCamera = function(cameraPosition, callback) {
     setTimeout(function() {
         cordova.exec(function() {
             if (typeof callback === "function") {
+                shouldResizeMap = true;
                 callback.call(self);
             }
         }, self.errorHandler, PLUGIN_NAME, 'exec', ['Map.moveCamera', cameraPosition]);
@@ -2412,6 +2414,7 @@ Geocoder.geocode = function(geocoderRequest, callback) {
  * Watch dog timer for child elements
  *****************************************************************************/
 var _mapInstance = new App();
+var shouldResizeMap = false;
 
 window._watchDogTimer = null;
 _mapInstance.addEventListener("keepWatching_changed", function(oldValue, newValue) {
@@ -2437,12 +2440,22 @@ _mapInstance.addEventListener("keepWatching_changed", function(oldValue, newValu
         if (div) {
             children = getAllChildren(div);
             childCnt = children.length;
+            divSize = getDivRect(div);
             if (childCnt != prevChildrenCnt) {
                 onMapResize();
                 prevChildrenCnt = childCnt;
                 watchDogTimer = setTimeout(myFunc, 100);
+                shouldResizeMap = true;
                 return;
             }
+            else {
+                if(shouldResizeMap) {
+                    onMapResize();
+                    shouldResizeMap = false;
+                    return;
+                }
+            }
+
             prevChildrenCnt = childCnt;
             divSize = getDivRect(div);
             if (prevSize) {
@@ -2454,6 +2467,7 @@ _mapInstance.addEventListener("keepWatching_changed", function(oldValue, newValu
                 }
             }
             prevSize = divSize;
+            shouldResizeMap = false;
         }
         div = null;
         divSize = null;
