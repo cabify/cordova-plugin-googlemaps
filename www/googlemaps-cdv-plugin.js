@@ -506,7 +506,7 @@ App.prototype.animateCamera = function(cameraPosition, callback) {
     setTimeout(function() {
         cordova.exec(function() {
             if (typeof callback === "function") {
-                resizeMap = true;
+                shouldResizeMap = true;
                 callback.call(self);
             }
         }, self.errorHandler, PLUGIN_NAME, 'exec', ['Map.animateCamera', cameraPosition]);
@@ -547,7 +547,7 @@ App.prototype.moveCamera = function(cameraPosition, callback) {
     setTimeout(function() {
         cordova.exec(function() {
             if (typeof callback === "function") {
-                resizeMap = true;
+                shouldResizeMap = true;
                 callback.call(self);
             }
         }, self.errorHandler, PLUGIN_NAME, 'exec', ['Map.moveCamera', cameraPosition]);
@@ -2414,7 +2414,7 @@ Geocoder.geocode = function(geocoderRequest, callback) {
  * Watch dog timer for child elements
  *****************************************************************************/
 var _mapInstance = new App();
-var resizeMap = false;
+var shouldResizeMap = false;
 
 window._watchDogTimer = null;
 _mapInstance.addEventListener("keepWatching_changed", function(oldValue, newValue) {
@@ -2445,13 +2445,13 @@ _mapInstance.addEventListener("keepWatching_changed", function(oldValue, newValu
                 onMapResize();
                 prevChildrenCnt = childCnt;
                 watchDogTimer = setTimeout(myFunc, 100);
-                resizeMap = true;
+                shouldResizeMap = true;
                 return;
             }
             else {
-                if(resizeMap) {
+                if(shouldResizeMap) {
                     onMapResize();
-                    resizeMap = false;
+                    shouldResizeMap = false;
                     return;
                 }
             }
@@ -2467,7 +2467,7 @@ _mapInstance.addEventListener("keepWatching_changed", function(oldValue, newValu
                 }
             }
             prevSize = divSize;
-            resizeMap = false;
+            shouldResizeMap = false;
         }
         div = null;
         divSize = null;
