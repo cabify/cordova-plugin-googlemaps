@@ -2632,6 +2632,8 @@ function getAllChildren(root) {
     var clickable;
     var style, displayCSS, opacityCSS, visibilityCSS, node, clickableSize;
 
+    root = document.querySelector('.main-region.foreground');
+
     var allClickableElements = Array.prototype.slice.call(root.querySelectorAll(':not([data-clickable="false"])'));
     var clickableElements =  allClickableElements.filter(function(i) {return i != root;});
 
