@@ -2634,10 +2634,11 @@ function getAllChildren(root) {
 
     root = document.querySelector('.main-region.foreground');
 
-    var allClickableElements = Array.prototype.slice.call(root.querySelectorAll(':not([data-clickable="false"])'));
-    var clickableElements =  allClickableElements.filter(function(i) {return i != root;});
+    if (root != null){
+      var allClickableElements = Array.prototype.slice.call(root.querySelectorAll(':not([data-clickable="false"])'));
+      var clickableElements =  allClickableElements.filter(function(i) {return i != root;});
 
-    for (var i = 0; i < clickableElements.length; i++) {
+      for (var i = 0; i < clickableElements.length; i++) {
         node = clickableElements[i];
         if (node.nodeType == 1){
           style = window.getComputedStyle(node);
@@ -2651,6 +2652,7 @@ function getAllChildren(root) {
             list.push(node);
           }
         }
+      }
     }
 
     return list;
