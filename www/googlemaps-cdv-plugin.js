@@ -287,6 +287,10 @@ App.prototype.getMap = function(div, params) {
     var self = this,
         args = [];
 
+    if (typeof params.clickableElementsSelector !== undefined){
+      self.set('clickableElementsSelector', params.clickableElementsSelector);
+    }
+
     if (!isDom(div)) {
         params = div;
         params = params || {};
@@ -2630,9 +2634,12 @@ window.addEventListener("orientationchange", function() {
 function getAllChildren(root) {
     var list = [];
     var clickable;
-    var style, displayCSS, opacityCSS, visibilityCSS, node, clickableSize;
+    var style, displayCSS, opacityCSS, visibilityCSS, node, clickableSize, clickableElementsSelector;
 
-    root = document.querySelector('.main-region.foreground');
+    clickableElementsSelector = _mapInstance.get('_mapInstance');
+    if( clickableElementsSelector != null ){
+      root = root.querySelector(clickableElementsSelector);
+    }
 
     if (root != null){
       var allClickableElements = Array.prototype.slice.call(root.querySelectorAll(':not([data-clickable="false"])'));
