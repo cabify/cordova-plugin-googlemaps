@@ -287,6 +287,10 @@ App.prototype.getMap = function(div, params) {
     var self = this,
         args = [];
 
+    if (typeof params.clickableElementsSelector !== undefined){
+      self.set('clickableElementsSelector', params.clickableElementsSelector);
+    }
+
     if (!isDom(div)) {
         params = div;
         params = params || {};
@@ -2644,12 +2648,18 @@ window.addEventListener("orientationchange", function() {
 function getAllChildren(root) {
     var list = [];
     var clickable;
-    var style, displayCSS, opacityCSS, visibilityCSS, node, clickableSize;
+    var style, displayCSS, opacityCSS, visibilityCSS, node, clickableSize, clickableElementsSelector;
 
-    var allClickableElements = Array.prototype.slice.call(root.querySelectorAll(':not([data-clickable="false"])'));
-    var clickableElements =  allClickableElements.filter(function(i) {return i != root;});
+    clickableElementsSelector = _mapInstance.get('_mapInstance');
+    if( clickableElementsSelector != null ){
+      root = root.querySelector(clickableElementsSelector);
+    }
 
-    for (var i = 0; i < clickableElements.length; i++) {
+    if (root != null){
+      var allClickableElements = Array.prototype.slice.call(root.querySelectorAll(':not([data-clickable="false"])'));
+      var clickableElements =  allClickableElements.filter(function(i) {return i != root;});
+
+      for (var i = 0; i < clickableElements.length; i++) {
         node = clickableElements[i];
         if (node.nodeType == 1){
           style = window.getComputedStyle(node);
@@ -2663,6 +2673,7 @@ function getAllChildren(root) {
             list.push(node);
           }
         }
+      }
     }
 
     return list;
