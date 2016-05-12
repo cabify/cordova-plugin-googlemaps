@@ -799,45 +799,33 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
       return;
     }
     mapDivLayoutJSON = args.getJSONObject(args.length() - 2);
-    final JSONArray HTMLs = args.getJSONArray(args.length() - 1);
-
+    JSONArray HTMLs = args.getJSONArray(args.length() - 1);
+    JSONObject elemInfo, elemSize;
+    String elemId;
+    float divW, divH, divLeft, divTop;
+    if (mPluginLayout == null) {
+      this.sendNoResult(callbackContext);
+      return;
+    }
     this.mPluginLayout.clearHTMLElement();
 
-    cordova.getThreadPool().execute(new Runnable() {
+    for (int i = 0; i < HTMLs.length(); i++) {
+      elemInfo = HTMLs.getJSONObject(i);
+      try {
+        elemId = elemInfo.getString("id");
+        elemSize = elemInfo.getJSONObject("size");
 
-      @Override
-      public void run(){
-
-        try {
-          JSONObject elemInfo, elemSize;
-          String elemId;
-          float divW, divH, divLeft, divTop;
-          for (int i = 0; i < HTMLs.length(); i++) {
-            elemInfo = HTMLs.getJSONObject(i);
-            try {
-              elemId = elemInfo.getString("id");
-              elemSize = elemInfo.getJSONObject("size");
-
-              divW = contentToView(elemSize.getLong("width"));
-              divH = contentToView(elemSize.getLong("height"));
-              divLeft = contentToView(elemSize.getLong("left"));
-              divTop = contentToView(elemSize.getLong("top"));
-              mPluginLayout.putHTMLElement(elemId, divLeft, divTop, divLeft + divW, divTop + divH);
-            } catch (Exception e){
-              e.printStackTrace();
-            }
-          }
-        } catch (Exception e){}
-        //mPluginLayout.inValidate();
-        cordova.getActivity().runOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-            updateMapViewLayout();
-          }
-        });
+        divW = contentToView(elemSize.getLong("width"));
+        divH = contentToView(elemSize.getLong("height"));
+        divLeft = contentToView(elemSize.getLong("left"));
+        divTop = contentToView(elemSize.getLong("top"));
+        mPluginLayout.putHTMLElement(elemId, divLeft, divTop, divLeft + divW, divTop + divH);
+      } catch (Exception e){
+        e.printStackTrace();
       }
-    });
-
+    }
+    //mPluginLayout.inValidate();
+    updateMapViewLayout();
     this.sendNoResult(callbackContext);
   }
 
