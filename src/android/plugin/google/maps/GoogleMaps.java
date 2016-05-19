@@ -340,7 +340,7 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
       return;
     }
 
-    mPluginLayout = new MyPluginLayout(webView.getView(), activity);
+    mPluginLayout = new MyPluginLayout(webView, activity);
 
     // ------------------------------
     // Check of Google Play Services

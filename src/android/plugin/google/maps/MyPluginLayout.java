@@ -27,9 +27,12 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.util.Log;
 
+import org.apache.cordova.CordovaWebView;
+
 @SuppressWarnings("deprecation")
 public class MyPluginLayout extends FrameLayout  {
   private View view;
+  private CordovaWebView myWebView;
   private ViewGroup root;
   private RectF drawRect = new RectF();
   private Context context;
@@ -47,17 +50,18 @@ public class MyPluginLayout extends FrameLayout  {
   private Activity mActivity = null;
 
   @SuppressLint("NewApi")
-  public MyPluginLayout(View view, Activity activity) {
-    super(view.getContext());
+  public MyPluginLayout(CordovaWebView webView, Activity activity) {
+    super(webView.getView().getContext());
     mActivity = activity;
-    this.view = view;
+    this.view = webView.getView();
+    this.myWebView = webView;
     this.root = (ViewGroup) view.getParent();
     this.context = view.getContext();
     Log.e("client", view.getClass().getName() );
 
     view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-    frontLayer = new FrontLayerLayout(this.context);
+    frontLayer = new FrontLayerLayout(this.context, myWebView);
 
     scrollView = new ScrollView(this.context);
     scrollView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -277,16 +281,21 @@ public class MyPluginLayout extends FrameLayout  {
     this.frontLayer.invalidate();
   }
 
-
   private class FrontLayerLayout extends FrameLayout {
 
-    public FrontLayerLayout(Context context) {
+    private CordovaWebView myWebView;
+
+    public FrontLayerLayout(Context context, CordovaWebView webView) {
       super(context);
+      this.myWebView = webView;
       this.setWillNotDraw(false);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
+
+      Log.e("client", "inside intercetp touch event of FrontLayerLayout");
+
       if (isClickable == false || myView == null || myView.getVisibility() != View.VISIBLE) {
         view.requestFocus(View.FOCUS_DOWN);
         return false;
@@ -318,7 +327,36 @@ public class MyPluginLayout extends FrameLayout  {
           rect.bottom += scrollY;
         }
       }
+
       if (!contains) {
+        Log.e("client", "contains -- false FrontLayerLayout");
+        String eventName = null;
+        switch(action) {
+        case MotionEvent.ACTION_DOWN:
+          eventName = "maptouchstart";
+          break;
+        case MotionEvent.ACTION_MOVE:
+          eventName = "maptouchmove";
+          break;
+        case MotionEvent.ACTION_UP:
+          eventName = "maptouchend";
+          break;
+        case MotionEvent.ACTION_CANCEL:
+          eventName = "maptouchcancel";
+          break;
+        case MotionEvent.ACTION_OUTSIDE:
+          eventName = "maptouchleave";
+          break;
+        default:
+          break;
+        }
+        Log.e("client", "launching the event " + eventName);
+        myWebView.loadUrl(
+          String.format("javascript:plugin.google.maps.Map._onTouchEvent('%s');",
+          eventName)
+        );
+
+        
         view.requestFocus(View.FOCUS_DOWN);
       }
       return contains;

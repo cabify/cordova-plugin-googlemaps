@@ -282,6 +282,17 @@ App.prototype._onCameraEvent = function(eventName, params) {
     this.trigger(eventName, cameraPosition, this);
 };
 
+/**
+ * Callback from Native
+ */
+App.prototype._onTouchEvent = function(eventName, params) {
+  console.log("called ontouch event in the plugin");
+    this.trigger(eventName, [], this);
+};
+
+App.prototype._myCustomCallback = function() {
+  console.log("my custom callback");
+}
 
 App.prototype.getMap = function(div, params) {
     var self = this,
@@ -2580,6 +2591,9 @@ module.exports = {
         INDOOR_LEVEL_ACTIVATED: 'indoor_level_activated',
         CAMERA_CHANGE: 'camera_change',
         CAMERA_IDLE: 'camera_idle', //for iOS
+        TOUCH_START: 'maptouchstart',
+        TOUCH_MOVE: 'maptouchmove',
+        TOUCH_END: 'maptouchend',
         MAP_READY: 'map_ready',
         MAP_LOADED: 'map_loaded', //for Android
         MAP_WILL_MOVE: 'will_move', //for iOS
