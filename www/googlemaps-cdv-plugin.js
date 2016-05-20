@@ -286,7 +286,6 @@ App.prototype._onCameraEvent = function(eventName, params) {
  * Callback from Native
  */
 App.prototype._onTouchEvent = function(eventName, params) {
-  console.log("called ontouch event in the plugin");
     this.trigger(eventName, [], this);
 };
 

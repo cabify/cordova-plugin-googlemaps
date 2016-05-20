@@ -61,7 +61,7 @@ public class MyPluginLayout extends FrameLayout  {
 
     view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-    frontLayer = new FrontLayerLayout(this.context, myWebView);
+    frontLayer = new FrontLayerLayout(this.context, webView);
 
     scrollView = new ScrollView(this.context);
     scrollView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -287,14 +287,12 @@ public class MyPluginLayout extends FrameLayout  {
 
     public FrontLayerLayout(Context context, CordovaWebView webView) {
       super(context);
-      this.myWebView = webView;
       this.setWillNotDraw(false);
+      this.myWebView = webView;
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-
-      Log.e("client", "inside intercetp touch event of FrontLayerLayout");
 
       if (isClickable == false || myView == null || myView.getVisibility() != View.VISIBLE) {
         view.requestFocus(View.FOCUS_DOWN);
@@ -329,35 +327,12 @@ public class MyPluginLayout extends FrameLayout  {
       }
 
       if (!contains) {
-        Log.e("client", "contains -- false FrontLayerLayout");
-        String eventName = null;
-        switch(action) {
-        case MotionEvent.ACTION_DOWN:
-          eventName = "maptouchstart";
-          break;
-        case MotionEvent.ACTION_MOVE:
-          eventName = "maptouchmove";
-          break;
-        case MotionEvent.ACTION_UP:
-          eventName = "maptouchend";
-          break;
-        case MotionEvent.ACTION_CANCEL:
-          eventName = "maptouchcancel";
-          break;
-        case MotionEvent.ACTION_OUTSIDE:
-          eventName = "maptouchleave";
-          break;
-        default:
-          break;
-        }
-        Log.e("client", "launching the event " + eventName);
-        myWebView.loadUrl(
-          String.format("javascript:plugin.google.maps.Map._onTouchEvent('%s');",
-          eventName)
-        );
-
-        
         view.requestFocus(View.FOCUS_DOWN);
+      } else {
+        String eventName = null;
+        if (action == MotionEvent.ACTION_DOWN){
+          myWebView.loadUrl( "javascript:plugin.google.maps.Map._onTouchEvent('maptouchstart');");
+        }
       }
       return contains;
     }
