@@ -329,6 +329,7 @@ public class MyPluginLayout extends FrameLayout  {
       if (!contains) {
         view.requestFocus(View.FOCUS_DOWN);
       } else {
+        Log.e("client", "launching touch start to the JS" );
         String eventName = null;
         if (action == MotionEvent.ACTION_DOWN){
           myWebView.loadUrl( "javascript:plugin.google.maps.Map._onTouchEvent('maptouchstart');");
