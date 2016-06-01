@@ -286,6 +286,7 @@ App.prototype._onCameraEvent = function(eventName, params) {
  * Callback from Native
  */
 App.prototype._onTouchEvent = function(eventName, params) {
+  console.log("called ontouch event in the plugin");
     this.trigger(eventName, [], this);
 };
 
@@ -2582,7 +2583,7 @@ function encodeNumber(num) {
  *****************************************************************************/
 module.exports = {
     event: {
-        MAP_CLICK: 'click',
+        MAP_CLICK: 'map_click',
         MAP_LONG_CLICK: 'long_click',
         MY_LOCATION_CHANGE: 'my_location_change', // for Android
         MY_LOCATION_BUTTON_CLICK: 'my_location_button_click',
@@ -2597,7 +2598,7 @@ module.exports = {
         MAP_LOADED: 'map_loaded', //for Android
         MAP_WILL_MOVE: 'will_move', //for iOS
         MAP_CLOSE: 'map_close',
-        MARKER_CLICK: 'click',
+        MARKER_CLICK: 'marker_click',
         OVERLAY_CLICK: 'overlay_click',
         INFO_CLICK: 'info_click',
         MARKER_DRAG: 'drag',
@@ -2649,14 +2650,18 @@ function getAllChildren(root) {
     var list = [];
     var clickable;
     var style, displayCSS, opacityCSS, visibilityCSS, node, clickableSize, clickableElementsSelector;
+    var allClickableElements = [];
 
-    clickableElementsSelector = _mapInstance.get('_mapInstance');
+    clickableElementsSelector = _mapInstance.get('clickableElementsSelector');
     if( clickableElementsSelector != null ){
-      root = root.querySelector(clickableElementsSelector);
+      roots = Array.prototype.slice.call(root.querySelectorAll(clickableElementsSelector));
     }
 
-    if (root != null){
-      var allClickableElements = Array.prototype.slice.call(root.querySelectorAll(':not([data-clickable="false"])'));
+    if (roots.length > 0){
+      roots.forEach( function(rootElement){
+        allClickableElements = allClickableElements.concat( Array.prototype.slice.call(rootElement.querySelectorAll(':not([data-clickable="false"])')) )
+      })
+
       var clickableElements =  allClickableElements.filter(function(i) {return i != root;});
 
       for (var i = 0; i < clickableElements.length; i++) {
