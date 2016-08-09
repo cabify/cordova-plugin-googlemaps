@@ -1,6 +1,7 @@
 package plugin.google.maps;
 
 import java.lang.reflect.Method;
+import java.lang.Math;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -48,6 +49,10 @@ public class MyPluginLayout extends FrameLayout  {
   private boolean isClickable = true;
   private Map<String, RectF> HTMLNodes = new HashMap<String, RectF>();
   private Activity mActivity = null;
+  private boolean mapDragging = false;
+
+  private float previousXPosition;
+  private float previousYPosition;
 
   @SuppressLint("NewApi")
   public MyPluginLayout(CordovaWebView webView, Activity activity) {
@@ -281,6 +286,53 @@ public class MyPluginLayout extends FrameLayout  {
     this.frontLayer.invalidate();
   }
 
+  public void setDragging() {
+    this.mapDragging = true;
+  }
+
+  public void clearDragging() {
+    this.mapDragging = false;
+  }
+
+  public void setTouchXPosition(float x){
+    previousXPosition = x;
+  }
+
+  public void setTouchYPosition(float y){
+    previousYPosition = y;
+  }
+
+
+  @Override
+  public boolean dispatchTouchEvent(MotionEvent event) {
+    int action = event.getAction();
+
+    if (mapDragging == true){
+      if (action == MotionEvent.ACTION_UP){
+        clearDragging();
+        myWebView.loadUrl( "javascript:plugin.google.maps.Map._onTouchEvent('maptouchend');");
+      }
+
+      if (action == MotionEvent.ACTION_MOVE){
+        float currentXPosition = event.getX();
+        float currentYPosition = event.getY();
+
+        float absXDiff = Math.abs(currentXPosition - previousXPosition);
+        float absYDiff = Math.abs(currentYPosition - previousYPosition);
+
+        if (absXDiff > 5 || absYDiff > 5 ){
+          previousXPosition = currentXPosition;
+          previousYPosition = currentYPosition;
+          myWebView.loadUrl( "javascript:plugin.google.maps.Map._onTouchEvent('maptouchmove');");
+        }
+
+      }
+
+    }
+
+    return super.dispatchTouchEvent(event);
+  }
+
   private class FrontLayerLayout extends FrameLayout {
 
     private CordovaWebView myWebView;
@@ -332,6 +384,10 @@ public class MyPluginLayout extends FrameLayout  {
         Log.e("client", "launching touch start to the JS" );
         String eventName = null;
         if (action == MotionEvent.ACTION_DOWN){
+          MyPluginLayout.this.setDragging();
+          MyPluginLayout.this.setTouchXPosition(event.getX());
+          MyPluginLayout.this.setTouchYPosition(event.getY());
+          Log.e("client", "setting dragging to true and launching the event");
           myWebView.loadUrl( "javascript:plugin.google.maps.Map._onTouchEvent('maptouchstart');");
         }
       }
