@@ -278,16 +278,20 @@ App.prototype._onMyLocationChange = function(params) {
  * Callback from Native
  */
 App.prototype._onCameraEvent = function(eventName, params) {
-    var cameraPosition = new CameraPosition(params);
-    this.trigger(eventName, cameraPosition, this);
+    var cameraPosition;
+    if (params.position !== undefined){
+      cameraPosition = new CameraPosition(params);
+      this.trigger(eventName, cameraPosition, this);
+    } else {
+      this.trigger(eventName, params, this);
+    }
 };
 
 /**
  * Callback from Native
  */
 App.prototype._onTouchEvent = function(eventName, params) {
-  console.log("called ontouch event in the plugin");
-    this.trigger(eventName, [], this);
+  this.trigger(eventName, [], this);
 };
 
 App.prototype._myCustomCallback = function() {
@@ -2590,6 +2594,7 @@ module.exports = {
         INDOOR_BUILDING_FOCUSED: 'indoor_building_focused',
         INDOOR_LEVEL_ACTIVATED: 'indoor_level_activated',
         CAMERA_CHANGE: 'camera_change',
+        CAMERA_MOVE_START: 'camera_move_started',
         CAMERA_IDLE: 'camera_idle', //for iOS
         TOUCH_START: 'maptouchstart',
         TOUCH_MOVE: 'maptouchmove',
