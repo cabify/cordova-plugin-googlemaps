@@ -285,20 +285,14 @@ public class MyPluginLayout extends FrameLayout  {
     this.frontLayer.invalidate();
   }
 
-  public void setDragging() {
-    this.mapDragging = true;
-  }
-
-  public void clearDragging() {
-    this.mapDragging = false;
-  }
-
-  public void setTouchXPosition(float x){
+  public void dragStartsAt(float x, float y){
+    mapDragging = true;
     previousXPosition = x;
+    previousYPosition = y;
   }
 
-  public void setTouchYPosition(float y){
-    previousYPosition = y;
+  public void dragEnds() {
+    mapDragging = false;
   }
 
 
@@ -306,9 +300,9 @@ public class MyPluginLayout extends FrameLayout  {
   public boolean dispatchTouchEvent(MotionEvent event) {
     int action = event.getAction();
 
-    if (mapDragging == true){
+    if (mapDragging){
       if (action == MotionEvent.ACTION_UP){
-        clearDragging();
+        dragEnds();
         myWebView.loadUrl( "javascript:plugin.google.maps.Map._onTouchEvent('maptouchend');");
       }
 
@@ -377,12 +371,9 @@ public class MyPluginLayout extends FrameLayout  {
       if (!contains) {
         view.requestFocus(View.FOCUS_DOWN);
       } else {
-        Log.e("client", "launching touch start to the JS" );
         String eventName = null;
         if (action == MotionEvent.ACTION_DOWN){
-          MyPluginLayout.this.setDragging();
-          MyPluginLayout.this.setTouchXPosition(event.getX());
-          MyPluginLayout.this.setTouchYPosition(event.getY());
+          MyPluginLayout.this.dragStartsAt(event.getX(), event.getY());
           Log.e("client", "setting dragging to true and launching the event");
           myWebView.loadUrl( "javascript:plugin.google.maps.Map._onTouchEvent('maptouchstart');");
         }

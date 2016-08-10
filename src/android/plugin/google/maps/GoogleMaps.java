@@ -1561,8 +1561,6 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
     JSONObject params = new JSONObject();
     String jsonStr = "";
 
-    Log.e("client", "onCameraIdle event");
-
     try {
       JSONObject target = new JSONObject();
       target.put("lat", position.target.latitude);
@@ -1584,9 +1582,6 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
 
   @Override
   public void onCameraMoveStarted(int reason) {
-
-    Log.e("client", "onCameraMoveStarted event");
-
     JSONObject params = new JSONObject();
     String jsonStr = "";
     String reasonStr = "";
