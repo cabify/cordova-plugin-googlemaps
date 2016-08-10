@@ -66,7 +66,8 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
-import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
+import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener;
+import com.google.android.gms.maps.GoogleMap.OnCameraMoveStartedListener;
 import com.google.android.gms.maps.GoogleMap.OnIndoorStateChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -94,8 +95,8 @@ import com.google.android.gms.maps.model.VisibleRegion;
 
 @SuppressWarnings("deprecation")
 public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, OnMarkerClickListener,
-      OnInfoWindowClickListener, OnMapClickListener, OnMapLongClickListener,
-      OnCameraChangeListener, OnMapLoadedCallback, OnMarkerDragListener,
+      OnInfoWindowClickListener, OnMapClickListener, OnMapLongClickListener, OnCameraMoveStartedListener,
+      OnCameraIdleListener, OnMapLoadedCallback, OnMarkerDragListener,
       OnMyLocationButtonClickListener, OnIndoorStateChangeListener, InfoWindowAdapter {
   private final String TAG = "GoogleMapsPlugin";
   private final HashMap<String, PluginEntry> plugins = new HashMap<String, PluginEntry>();
@@ -581,7 +582,8 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
           }
 
           // Set event listener
-          map.setOnCameraChangeListener(GoogleMaps.this);
+          map.setOnCameraIdleListener(GoogleMaps.this);
+          map.setOnCameraMoveStartedListener(GoogleMaps.this);
           map.setOnInfoWindowClickListener(GoogleMaps.this);
           map.setOnMapClickListener(GoogleMaps.this);
           map.setOnMapLoadedCallback(GoogleMaps.this);
@@ -1554,9 +1556,13 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
    * Notify the myLocationChange event to JS
    */
   @Override
-  public void onCameraChange(CameraPosition position) {
+  public void onCameraIdle() {
+    CameraPosition position = map.getCameraPosition();
     JSONObject params = new JSONObject();
     String jsonStr = "";
+
+    Log.e("client", "onCameraIdle event");
+
     try {
       JSONObject target = new JSONObject();
       target.put("lat", position.target.latitude);
@@ -1570,8 +1576,43 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
     } catch (JSONException e) {
       e.printStackTrace();
     }
+
+
     webView.loadUrl("javascript:plugin.google.maps.Map._onCameraEvent('camera_change', " + jsonStr + ")");
   }
+
+
+  @Override
+  public void onCameraMoveStarted(int reason) {
+
+    Log.e("client", "onCameraMoveStarted event");
+
+    JSONObject params = new JSONObject();
+    String jsonStr = "";
+    String reasonStr = "";
+
+    switch(reason){
+      case REASON_API_ANIMATION:
+        reasonStr = "api_animation";
+        break;
+      case REASON_DEVELOPER_ANIMATION:
+        reasonStr = "developer_animation";
+        break;
+      case REASON_GESTURE:
+        reasonStr = "gesture";
+        break;
+    }
+
+    try {
+      params.put("reason", reasonStr);
+      jsonStr = params.toString();
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+
+    webView.loadUrl("javascript:plugin.google.maps.Map._onCameraEvent('camera_move_started', " + jsonStr + ")");
+  }
+
 
   @Override
   public void onIndoorBuildingFocused() {

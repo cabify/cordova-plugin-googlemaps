@@ -1,7 +1,6 @@
 package plugin.google.maps;
 
 import java.lang.reflect.Method;
-import java.lang.Math;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -317,10 +316,7 @@ public class MyPluginLayout extends FrameLayout  {
         float currentXPosition = event.getX();
         float currentYPosition = event.getY();
 
-        float absXDiff = Math.abs(currentXPosition - previousXPosition);
-        float absYDiff = Math.abs(currentYPosition - previousYPosition);
-
-        if (absXDiff > 5 || absYDiff > 5 ){
+        if (currentXPosition != previousXPosition || currentYPosition != previousYPosition ){
           previousXPosition = currentXPosition;
           previousYPosition = currentYPosition;
           myWebView.loadUrl( "javascript:plugin.google.maps.Map._onTouchEvent('maptouchmove');");
