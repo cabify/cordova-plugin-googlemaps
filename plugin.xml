@@ -106,7 +106,7 @@
         <source-file src="src/android/res/markers/drawable-mdpi/end.png" target-dir="res/drawable-mdpi"/>
         <source-file src="src/android/res/markers/drawable-xhdpi/end.png" target-dir="res/drawable-xhdpi"/>
         <source-file src="src/android/res/markers/drawable-xxhdpi/end.png" target-dir="res/drawable-xxhdpi"/>
-        <source-file src="src/android/res/markers/drawable-xxxhdpi/end.png" target-dir="res/drawable-xxxhdpi"/>        
+        <source-file src="src/android/res/markers/drawable-xxxhdpi/end.png" target-dir="res/drawable-xxxhdpi"/>
 
         <source-file src="src/android/res/markers/drawable-hdpi/transparent_marker.png" target-dir="res/drawable-hdpi"/>
         <source-file src="src/android/res/markers/drawable-mdpi/transparent_marker.png" target-dir="res/drawable-mdpi"/>
@@ -119,6 +119,12 @@
         <source-file src="src/android/res/infoWindow/drawable-xhdpi/infowindow.9.png" target-dir="res/drawable-xhdpi"/>
         <source-file src="src/android/res/infoWindow/drawable-xxhdpi/infowindow.9.png" target-dir="res/drawable-xxhdpi"/>
         <source-file src="src/android/res/infoWindow/drawable-xxxhdpi/infowindow.9.png" target-dir="res/drawable-xxxhdpi"/>
+
+        <source-file src="src/android/res/markers/drawable-hdpi/assigning_car.png" target-dir="res/drawable-hdpi"/>
+        <source-file src="src/android/res/markers/drawable-mdpi/assigning_car.png" target-dir="res/drawable-mdpi"/>
+        <source-file src="src/android/res/markers/drawable-xhdpi/assigning_car.png" target-dir="res/drawable-xhdpi"/>
+        <source-file src="src/android/res/markers/drawable-xxhdpi/assigning_car.png" target-dir="res/drawable-xxhdpi"/>
+        <source-file src="src/android/res/markers/drawable-xxxhdpi/assigning_car.png" target-dir="res/drawable-xxxhdpi"/>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <meta-data
