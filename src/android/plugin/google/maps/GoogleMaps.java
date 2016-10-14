@@ -126,6 +126,15 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
   public boolean isDebug = false;
   private GoogleApiClient googleApiClient = null;
 
+  private int maxZoom = 21;
+  private Runnable enableScrollingRunnable;
+  private ScaleGestureDetector gestureDetector;
+  private int fingers = 0;
+  private long lastZoomTime = 0;
+  private float lastSpan = -1;
+  private float timeDelta = 0;
+  private Handler handler = new Handler();
+
   @SuppressLint("NewApi") @Override
   public void initialize(final CordovaInterface cordova, final CordovaWebView webView) {
     super.initialize(cordova, webView);
@@ -593,6 +602,33 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
           map.setOnMyLocationButtonClickListener(GoogleMaps.this);
           map.setOnIndoorStateChangeListener(GoogleMaps.this);
 
+          gestureDetector = new ScaleGestureDetector(mapView.getContext(), new ScaleGestureDetector.OnScaleGestureListener() {
+
+            @Override
+            public boolean onScale(ScaleGestureDetector detector) {
+              timeDelta = detector.getEventTime() - lastZoomTime;
+              if (lastSpan == -1 || timeDelta < 15 || timeDelta > 30) {
+                lastSpan = detector.getCurrentSpan();
+              } else if ( timeDelta >= 15 && timeDelta <= 30  &&
+                  ((map.getCameraPosition().zoom +  getZoomValue(detector.getCurrentSpan(), lastSpan) )  < maxZoom )){
+                googleMap.moveCamera(CameraUpdateFactory.zoomBy(getZoomValue(detector.getCurrentSpan(), lastSpan)));
+              }
+              lastZoomTime = detector.getEventTime();
+              return false;
+            }
+
+            @Override
+            public boolean onScaleBegin(ScaleGestureDetector detector) {
+              lastSpan = -1;
+              return true;
+            }
+
+            @Override
+            public void onScaleEnd(ScaleGestureDetector detector) {
+              lastSpan = -1;
+            }
+          });
+
           // Load PluginMap class
           GoogleMaps.this.loadPlugin("Map");
           //Custom info window
@@ -614,6 +650,29 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
       }
     });
 
+  }
+
+  private void enableScrolling() {
+    if (map != null && !map.getUiSettings().isScrollGesturesEnabled()) {
+      enableScrollingRunnable = new Runnable() {
+        @Override
+        public void run() {
+          map.getUiSettings().setAllGesturesEnabled(true);
+        }
+      };
+      cordova.getActivity().runOnUiThread(enableScrollingRunnable);
+    }
+  }
+
+  private void disableScrolling() {
+    if (map != null && map.getUiSettings().isScrollGesturesEnabled()) {
+      map.getUiSettings().setAllGesturesEnabled(false);
+    }
+  }
+
+  private float getZoomValue(float currentSpan, float lastSpan) {
+    double value = Math.log(currentSpan / lastSpan) / Math.log(9.85);
+    return (float) value;
   }
 
   private float contentToView(long d) {
