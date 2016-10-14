@@ -262,6 +262,10 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
                 }
               }
 
+              if (jsonParams.has("maxZoom")){
+                maxZoom = jsonParams.getInt("maxZoom");
+              }
+
             }
 
             // Load the class plugin
@@ -340,6 +344,18 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
         mapView.setVisibility(View.INVISIBLE);
       }
     }
+    this.sendNoResult(callbackContext);
+  }
+
+  /**
+   * Set max zoom level of the map
+   * @param args
+   * @param callbackContext
+   * @throws JSONException
+   */
+  @SuppressWarnings("unused")
+  private void setMaxZoom(JSONArray args, CallbackContext callbackContext) throws JSONException {
+    this.maxZoom = args.getInt(0);
     this.sendNoResult(callbackContext);
   }
 
