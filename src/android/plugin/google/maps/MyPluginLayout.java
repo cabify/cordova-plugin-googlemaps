@@ -373,8 +373,7 @@ public class MyPluginLayout extends FrameLayout  {
       } else {
         String eventName = null;
         if (action == MotionEvent.ACTION_DOWN){
-          MyPluginLayout.this.dragStartsAt(event.getX(), event.getY());
-          Log.e("client", "setting dragging to true and launching the event");
+          MyPluginLayout.this.dragStartsAt(event.getX(), event.getY());          
           myWebView.loadUrl( "javascript:plugin.google.maps.Map._onTouchEvent('maptouchstart');");
         }
       }

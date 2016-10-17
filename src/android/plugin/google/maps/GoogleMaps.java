@@ -653,9 +653,9 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
             @Override
             public boolean onScale(ScaleGestureDetector detector) {
               timeDelta = detector.getEventTime() - lastZoomTime;
-              if (lastSpan == -1 || timeDelta < 15 || timeDelta > 30) {
+              if (lastSpan == -1 || timeDelta > 30) {
                 lastSpan = detector.getCurrentSpan();
-              } else if ( timeDelta >= 15 && timeDelta <= 30  &&
+              } else if (timeDelta <= 30  &&
                   ((map.getCameraPosition().zoom +  getZoomValue(detector.getCurrentSpan(), lastSpan) )  < maxZoom )){
                 googleMap.moveCamera(CameraUpdateFactory.zoomBy(getZoomValue(detector.getCurrentSpan(), lastSpan)));
               }
@@ -717,7 +717,7 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
   }
 
   private float getZoomValue(float currentSpan, float lastSpan) {
-    double value = Math.log(currentSpan / lastSpan) / Math.log(9.85);
+    double value = Math.log(currentSpan / lastSpan) / Math.log(12.85);
     return (float) value;
   }
 
