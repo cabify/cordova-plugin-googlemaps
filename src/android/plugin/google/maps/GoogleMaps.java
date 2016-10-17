@@ -1838,6 +1838,7 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
     if (mapView != null) {
       mapView.onDestroy();
     }
+    gestureDetector = null;
     super.onDestroy();
   }
 
