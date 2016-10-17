@@ -65,6 +65,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener;
 import com.google.android.gms.maps.GoogleMap.OnCameraMoveStartedListener;
@@ -260,10 +261,6 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
                     mPluginLayout.setBackgroundColor(backgroundColor);
                   } catch (JSONException e) {}
                 }
-              }
-
-              if (jsonParams.has("maxZoom")){
-                maxZoom = jsonParams.getInt("maxZoom");
               }
 
             }
@@ -513,6 +510,13 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
 
     }
 
+    if (params.has("maxZoom")){
+      Log.e("client", "-- json has maxZoom");
+      maxZoom = params.getInt("maxZoom");
+    } else {
+      Log.e("client", "-- json has NOT maxZoom");
+    }
+
     //controls
     if (params.has("controls")) {
       JSONObject controls = params.getJSONObject("controls");
@@ -582,12 +586,41 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
       options.camera(builder.build());
     }
 
-    mapView = new MapView(activity, options);
+     mapView = new MapView(activity, options) {
+      @Override
+      public boolean dispatchTouchEvent(MotionEvent ev) {
+        switch (ev.getAction() & MotionEvent.ACTION_MASK) {
+          case MotionEvent.ACTION_POINTER_DOWN:
+            fingers = fingers + 1;
+            break;
+          case MotionEvent.ACTION_POINTER_UP:
+            fingers = fingers - 1;
+            break;
+          case MotionEvent.ACTION_UP:
+            fingers = 0;
+            break;
+          case MotionEvent.ACTION_DOWN:
+            fingers = 1;
+            break;
+        }
+        if (fingers > 1) {
+          disableScrolling();
+        } else if (fingers < 1) {
+          enableScrolling();
+        }
+        if (fingers > 1) {
+          return gestureDetector.onTouchEvent(ev);
+        } else {
+          return super.dispatchTouchEvent(ev);
+        }
+      }
+    };
+
     mapView.onCreate(null);
     mapView.onResume();
     mapView.getMapAsync(new OnMapReadyCallback() {
       @Override
-      public void onMapReady(GoogleMap googleMap) {
+      public void onMapReady(final GoogleMap googleMap) {
 
         map = googleMap;
         try {
