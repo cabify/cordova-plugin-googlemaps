@@ -306,6 +306,10 @@ App.prototype.getMap = function(div, params) {
       self.set('clickableElementsSelector', params.clickableElementsSelector);
     }
 
+    if (typeof params.maxZoom !== undefined){
+      self.set('maxZoom', params.maxZoom);
+    }
+
     if (!isDom(div)) {
         params = div;
         params = params || {};
@@ -459,6 +463,16 @@ App.prototype.setZoom = function(zoom) {
     this.set('zoom', zoom);
     cordova.exec(null, this.errorHandler, PLUGIN_NAME, 'exec', ['Map.setZoom', zoom]);
 };
+
+App.prototype.setMaxZoom = function(maxZoom) {
+    this.set('maxZoom', maxZoom);
+    cordova.exec(null, this.errorHandler, PLUGIN_NAME, 'exec', ['Map.setMaxZoom', maxZoom]);
+};
+
+App.prototype.getMaxZoomLevel = function() {
+    return this.get('maxZoom');
+};
+
 App.prototype.panBy = function(x, y) {
     x = parseInt(x, 10);
     y = parseInt(y, 10);
