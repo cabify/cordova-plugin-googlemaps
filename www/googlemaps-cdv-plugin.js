@@ -306,6 +306,10 @@ App.prototype.getMap = function(div, params) {
       self.set('clickableElementsSelector', params.clickableElementsSelector);
     }
 
+    if (typeof params.maxZoom !== undefined){
+      self.set('maxZoom', params.maxZoom);
+    }
+
     if (!isDom(div)) {
         params = div;
         params = params || {};

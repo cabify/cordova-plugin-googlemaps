@@ -511,10 +511,7 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
     }
 
     if (params.has("maxZoom")){
-      Log.e("client", "-- json has maxZoom");
       maxZoom = params.getInt("maxZoom");
-    } else {
-      Log.e("client", "-- json has NOT maxZoom");
     }
 
     //controls
