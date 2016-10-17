@@ -1020,7 +1020,8 @@ App.prototype.setPadding = function(p1, p2, p3, p4) {
 //-------------
 // Marker
 //-------------
-App.prototype.addMarker = function(markerOptions, callback) {
+
+var addMarker = function(markerOptions, callback, addNextCallback) {
     var self = this;
     markerOptions.animation = markerOptions.animation || undefined;
     markerOptions.position = markerOptions.position || {};
@@ -1068,9 +1069,42 @@ App.prototype.addMarker = function(markerOptions, callback) {
         if (typeof callback === "function") {
             callback.call(self, marker, self);
         }
+        if (typeof addNextCallback === "function") {
+            addNextCallback.call(self, callback);
+        }
+
     }, self.errorHandler, PLUGIN_NAME, 'exec', ['Marker.createMarker', markerOptions]);
 };
 
+var markersToAdd = [];
+
+var addNextMarker = function(callback) {
+    var self = this;
+    markersToAdd.shift();
+
+    if (markersToAdd.length > 0) {
+        addMarker.call(self, markersToAdd[0], callback, addNextMarker);
+    }
+};
+
+App.prototype.addSingleMarker = function(markerOptions, callback) {
+    addMarker.call(self, markerOptions, callback);
+}
+
+App.prototype.addMarkers = function(markerOptions, callback) {
+    var self = this;
+
+    if (markersToAdd.length == 0) {
+        markersToAdd.push(markerOptions);
+        addMarker.call(self, markersToAdd[0], callback, addNextMarker);
+    } else {
+        markersToAdd.push(markerOptions);
+    }
+};
+
+App.prototype.stopAddMarkers = function() {
+    markersToAdd = [];
+};
 
 //-------------
 // Circle
