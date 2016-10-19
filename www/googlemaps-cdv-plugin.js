@@ -1034,8 +1034,11 @@ App.prototype.setPadding = function(p1, p2, p3, p4) {
 //-------------
 // Marker
 //-------------
+var markersToAdd = [];
 
-var addMarker = function(markerOptions, callback, addNextCallback) {
+var vehicleMarkersShown = true;
+
+var addMarker = function(markerOptions, callback) {
     var self = this;
     markerOptions.animation = markerOptions.animation || undefined;
     markerOptions.position = markerOptions.position || {};
@@ -1083,42 +1086,52 @@ var addMarker = function(markerOptions, callback, addNextCallback) {
         if (typeof callback === "function") {
             callback.call(self, marker, self);
         }
-        if (typeof addNextCallback === "function") {
-            addNextCallback.call(self, callback);
-        }
+        addNextMarker.call(self, callback);
 
     }, self.errorHandler, PLUGIN_NAME, 'exec', ['Marker.createMarker', markerOptions]);
 };
-
-var markersToAdd = [];
 
 var addNextMarker = function(callback) {
     var self = this;
     markersToAdd.shift();
 
+    if (!vehicleMarkersShown) {
+        removeVehicleMarkersToAdd();
+    }
+
     if (markersToAdd.length > 0) {
-        addMarker.call(self, markersToAdd[0], callback, addNextMarker);
+        addMarker.call(self, markersToAdd[0], callback);
     }
 };
 
-App.prototype.addSingleMarker = function(markerOptions, callback) {
-    addMarker.call(self, markerOptions, callback);
+var removeVehicleMarkersToAdd = function() {
+    var markers = [];
+    markersToAdd.forEach(function(markerOptions) {
+        if (!markerOptions.isCar) {
+            markers.push(markerOptions);
+        }
+    });
+    markersToAdd = markers;
 }
 
-App.prototype.addMarkers = function(markerOptions, callback) {
+App.prototype.setMarker = function(markerOptions, callback) {
     var self = this;
 
     if (markersToAdd.length == 0) {
         markersToAdd.push(markerOptions);
-        addMarker.call(self, markersToAdd[0], callback, addNextMarker);
+        addMarker.call(self, markersToAdd[0], callback);
     } else {
         markersToAdd.push(markerOptions);
     }
 };
 
-App.prototype.stopAddMarkers = function() {
-    markersToAdd = [];
-};
+App.prototype.setVehicleMarkersShown = function(value) {
+    vehicleMarkersShown = value;
+}
+
+App.prototype.getVehicleMarkersShown = function() {
+    return vehicleMarkersShown;
+}
 
 //-------------
 // Circle
