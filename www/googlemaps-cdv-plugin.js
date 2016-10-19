@@ -1036,9 +1036,7 @@ App.prototype.setPadding = function(p1, p2, p3, p4) {
 //-------------
 var markersToAdd = [];
 
-var vehicleMarkersShown = true;
-
-var addMarker = function(markerOptions, callback) {
+var addMarker = function(markerOptions, callback, nextMarkerCallback) {
     var self = this;
     markerOptions.animation = markerOptions.animation || undefined;
     markerOptions.position = markerOptions.position || {};
@@ -1107,14 +1105,12 @@ var addNextMarker = function(callback) {
 var removeVehicleMarkersToAdd = function() {
     var markers = [];
     markersToAdd.forEach(function(markerOptions) {
-        if (!markerOptions.isCar) {
-            markers.push(markerOptions);
-        }
-    });
+        markers.push(markerOptions) if (markerOptions.isCar);
+    })
     markersToAdd = markers;
 }
 
-App.prototype.setMarker = function(markerOptions, callback) {
+App.prototype.addMarkers = function(markerOptions, callback) {
     var self = this;
 
     if (markersToAdd.length == 0) {
@@ -1124,14 +1120,6 @@ App.prototype.setMarker = function(markerOptions, callback) {
         markersToAdd.push(markerOptions);
     }
 };
-
-App.prototype.setVehicleMarkersShown = function(value) {
-    vehicleMarkersShown = value;
-}
-
-App.prototype.getVehicleMarkersShown = function() {
-    return vehicleMarkersShown;
-}
 
 //-------------
 // Circle
