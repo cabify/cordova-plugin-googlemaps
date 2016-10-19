@@ -58,12 +58,24 @@ public class PluginMarker extends MyPlugin {
 
   private CustomInfoWindowAdapter customInfoWindowAdapter;
 
-  /**
-   * Create a markerOptions
-   * @param args
-   * @param callbackContext
-   * @throws JSONException
-   */
+
+
+  @SuppressWarnings("unused")
+  private PluginAsyncInterface noOpAsyncInterface() {
+    return new PluginAsyncInterface() {
+
+      @Override
+      public void onPostExecute(Object object){
+        Log.w("client", "noOpAsyncInterface onPostExecute");
+      }
+
+      @Override
+      public void onError(String errorMsg){
+        Log.w("client", "noOpAsyncInterface onError: " + errorMsg);
+      }
+    };
+  }
+
   @SuppressWarnings("unused")
   private MarkerOptions getMarkerOptions(final JSONObject opts) throws JSONException {
     // Create an instance of Marker class
@@ -167,8 +179,10 @@ public class PluginMarker extends MyPlugin {
   }
 
   private void setAnimationForJustCreatedMarker(Marker marker, String markerAnimation, final CallbackContext callbackContext) throws JSONException{
-    if (markerAnimation != null) {
-      PluginMarker.this.setMarkerAnimation_(marker, markerAnimation, new PluginAsyncInterface() {
+
+    PluginAsyncInterface asyncInterface;
+    if (callbackContext != null){
+      asyncInterface = new PluginAsyncInterface() {
 
         @Override
         public void onPostExecute(Object object){
@@ -176,7 +190,7 @@ public class PluginMarker extends MyPlugin {
           try {
             callbackContext.success(getMarkerResultJSON(marker));
           } catch (JSONException e){
-              callbackContext.error("Error generating result JSON");
+            callbackContext.error("Error generating result JSON");
           }
         }
 
@@ -184,47 +198,63 @@ public class PluginMarker extends MyPlugin {
         public void onError(String errorMsg){
           callbackContext.error(errorMsg);
         }
-      });
+      };
     } else {
-      callbackContext.success(getMarkerResultJSON(marker));
+      asyncInterface = noOpAsyncInterface();
+    }
+
+    if (markerAnimation != null) {
+      PluginMarker.this.setMarkerAnimation_(marker, markerAnimation, asyncInterface);
+    } else {
+        if (callbackContext != null) {
+        callbackContext.success(getMarkerResultJSON(marker));
+      }
     }
   }
 
   private void setIconforJustCreatedMarker(Marker marker, final JSONObject opts, Bundle bundle, final CallbackContext callbackContext) throws JSONException{
-    this.setIcon_(marker, bundle, new PluginAsyncInterface() {
 
-      @Override
-      public void onPostExecute(Object object) {
-        Marker marker = (Marker)object;
-        if (opts.has("visible")) {
-          try {
-            marker.setVisible(opts.getBoolean("visible"));
-          } catch (JSONException e) {}
-        } else {
-          marker.setVisible(true);
-        }
-        // Animation
-        if (opts.has("animation")) {
-          try {
-            setAnimationForJustCreatedMarker(marker, opts.getString("animation"), callbackContext);
-          } catch (JSONException e) {
-            e.printStackTrace();
+    PluginAsyncInterface asyncInterface;
+    if (callbackContext != null){
+      asyncInterface = new PluginAsyncInterface() {
+
+        @Override
+        public void onPostExecute(Object object) {
+          Marker marker = (Marker)object;
+          if (opts.has("visible")) {
+            try {
+              marker.setVisible(opts.getBoolean("visible"));
+            } catch (JSONException e) {}
+            } else {
+              marker.setVisible(true);
+            }
+            // Animation
+            if (opts.has("animation")) {
+              try {
+                setAnimationForJustCreatedMarker(marker, opts.getString("animation"), callbackContext);
+              } catch (JSONException e) {
+                e.printStackTrace();
+              }
+            } else {
+              try {
+                callbackContext.success(getMarkerResultJSON(marker));
+              } catch (JSONException e){
+                callbackContext.error("Error generating result JSON");
+              }
+            }
           }
-        } else {
-          try {
-            callbackContext.success(getMarkerResultJSON(marker));
-          } catch (JSONException e){
-            callbackContext.error("Error generating result JSON");
+
+          @Override
+          public void onError(String errorMsg) {
+            callbackContext.error(errorMsg);
           }
-        }
-      }
 
-      @Override
-      public void onError(String errorMsg) {
-        callbackContext.error(errorMsg);
-      }
+        };
+    } else {
+      asyncInterface = noOpAsyncInterface();
+    }
 
-    });
+    this.setIcon_(marker, bundle, asyncInterface);
   }
 
   private void storeMarker(Marker marker, final JSONObject opts) throws JSONException {
@@ -285,6 +315,20 @@ public class PluginMarker extends MyPlugin {
         callbackContext.success(getMarkerResultJSON(marker));
       }
     }
+  }
+
+
+  /**
+   * Create multiple markers
+   * @param args
+   * @param callbackContext
+   * @throws JSONException
+   */
+  @SuppressWarnings("unused")
+  private void createMultipleMarkers(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
+    // final JSONArray markersJSONArray = args.getJSONArray(1);
+
+
   }
 
   private void setDropAnimation_(final Marker marker, final PluginAsyncInterface callback) {
