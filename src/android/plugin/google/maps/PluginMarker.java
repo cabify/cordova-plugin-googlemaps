@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
+import java.util.List;
+import java.util.ArrayList;
+
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaResourceApi;
@@ -179,7 +182,6 @@ public class PluginMarker extends MyPlugin {
   }
 
   private void setAnimationForJustCreatedMarker(Marker marker, String markerAnimation, final CallbackContext callbackContext) throws JSONException{
-
     PluginAsyncInterface asyncInterface;
     if (callbackContext != null){
       asyncInterface = new PluginAsyncInterface() {
@@ -213,7 +215,6 @@ public class PluginMarker extends MyPlugin {
   }
 
   private void setIconforJustCreatedMarker(Marker marker, final JSONObject opts, Bundle bundle, final CallbackContext callbackContext) throws JSONException{
-
     PluginAsyncInterface asyncInterface;
     if (callbackContext != null){
       asyncInterface = new PluginAsyncInterface() {
@@ -281,28 +282,12 @@ public class PluginMarker extends MyPlugin {
     return result;
   }
 
-  /**
-   * Create a marker
-   * @param args
-   * @param callbackContext
-   * @throws JSONException
-   */
-  @SuppressWarnings("unused")
-  private void createMarker(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
-    final JSONObject opts = args.getJSONObject(1);
 
-    MarkerOptions markerOptions = getMarkerOptions(opts);
-
-    Marker marker = map.addMarker(markerOptions);
-
-    storeMarker(marker, opts);
-
+  private void setIconAndAnimationForMarker(Marker marker, JSONObject opts, CallbackContext callbackContext) throws JSONException {
     // Load icon
     if (opts.has("icon")) {
-
       Bundle bundle = getIconBundle(opts);
       setIconforJustCreatedMarker(marker, opts, bundle, callbackContext);
-
     } else {
       // Animation
       if (opts.has("animation")) {
@@ -312,11 +297,33 @@ public class PluginMarker extends MyPlugin {
           e.printStackTrace();
         }
       } else {
-        callbackContext.success(getMarkerResultJSON(marker));
+        if (callbackContext != null){
+          callbackContext.success(getMarkerResultJSON(marker));
+        }
       }
     }
   }
 
+  @SuppressWarnings("unused")
+  private Marker addMarkerToMap(MarkerOptions markerOptions, final JSONObject opts, final CallbackContext callbackContext) throws JSONException {
+    Marker marker = map.addMarker(markerOptions);
+    storeMarker(marker, opts);
+    setIconAndAnimationForMarker(marker, opts, callbackContext);
+    return marker;
+  }
+
+
+  /**
+   * Create a marker
+   * @param args
+   * @param callbackContext
+   * @throws JSONException
+   */
+  @SuppressWarnings("unused")
+  private void createMarker(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
+    JSONObject opts = args.getJSONObject(1);
+    addMarkerToMap(getMarkerOptions(opts), opts, callbackContext);
+  }
 
   /**
    * Create multiple markers
@@ -326,9 +333,29 @@ public class PluginMarker extends MyPlugin {
    */
   @SuppressWarnings("unused")
   private void createMultipleMarkers(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
-    // final JSONArray markersJSONArray = args.getJSONArray(1);
+    final JSONArray markersJSONArray = args.getJSONArray(1);
+
+    JSONObject opts;
+    MarkerOptions markerOptions;
+    Marker marker;
 
 
+    List<JSONObject> optsList = new ArrayList<JSONObject>();
+    List<MarkerOptions> markerOptionsList = new ArrayList<MarkerOptions>();
+    JSONArray resultsJSONArray = new JSONArray();
+
+    for(int i=0; i < markersJSONArray.length(); i++){
+      opts = markersJSONArray.getJSONObject(i);
+      optsList.add(opts);
+      markerOptionsList.add(getMarkerOptions(opts));
+    }
+
+    for(int i=0; i < markersJSONArray.length(); i++){
+      marker = addMarkerToMap(markerOptionsList.get(i), optsList.get(i), null);
+      resultsJSONArray.put(getMarkerResultJSON(marker));
+    }
+
+    callbackContext.success(resultsJSONArray);
   }
 
   private void setDropAnimation_(final Marker marker, final PluginAsyncInterface callback) {
