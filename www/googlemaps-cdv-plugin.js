@@ -1034,56 +1034,85 @@ App.prototype.setPadding = function(p1, p2, p3, p4) {
 //-------------
 // Marker
 //-------------
+
+var mergeMarkerOptionsWithDefaults = function(markerOptions){
+  markerOptions.animation = markerOptions.animation || undefined;
+  markerOptions.position = markerOptions.position || {};
+  markerOptions.position.lat = markerOptions.position.lat || 0.0;
+  markerOptions.position.lng = markerOptions.position.lng || 0.0;
+  markerOptions.anchor = markerOptions.anchor || [0.5, 0.5];
+  markerOptions.draggable = markerOptions.draggable || false;
+  markerOptions.icon = markerOptions.icon || undefined;
+  markerOptions.snippet = markerOptions.snippet || undefined;
+  markerOptions.title = markerOptions.title !== undefined ? String(markerOptions.title) : undefined;
+  markerOptions.visible = markerOptions.visible === undefined ? true : markerOptions.visible;
+  markerOptions.flat = markerOptions.flat || false;
+  markerOptions.rotation = markerOptions.rotation || 0;
+  markerOptions.opacity = parseFloat("" + markerOptions.opacity, 10) || 1;
+  markerOptions.disableAutoPan = markerOptions.disableAutoPan === undefined ? false : markerOptions.disableAutoPan;
+  markerOptions.markerType = markerOptions.markerType || undefined;
+  markerOptions.customMarkerFirstString = markerOptions.customMarkerFirstString || undefined;
+  markerOptions.customMarkerSecondString = markerOptions.customMarkerSecondString || undefined;
+  markerOptions.mapOrientation = markerOptions.mapOrientation || undefined;
+  markerOptions.params = markerOptions.params || {};
+
+  if ("styles" in markerOptions) {
+      markerOptions.styles = typeof markerOptions.styles === "object" ? markerOptions.styles : {};
+
+      if ("color" in markerOptions.styles) {
+          markerOptions.styles.color = HTMLColor2RGBA(markerOptions.styles.color || "#000000");
+      }
+  }
+  if (markerOptions.icon && isHTMLColorString(markerOptions.icon)) {
+      markerOptions.icon = HTMLColor2RGBA(markerOptions.icon);
+  }
+};
+
+var storeMarker = function(result, markerOptions){
+  markerOptions.hashCode = result.hashCode;
+  var marker = new Marker(this, result.id, markerOptions);
+
+  MARKERS[result.id] = marker;
+  OVERLAYS[result.id] = marker;
+
+  if (typeof markerOptions.markerClick === "function") {
+      marker.on(plugin.google.maps.event.MARKER_CLICK, markerOptions.markerClick);
+  }
+  if (typeof markerOptions.infoClick === "function") {
+      marker.on(plugin.google.maps.event.INFO_CLICK, markerOptions.infoClick);
+  }
+  return marker;
+}
+
 App.prototype.addMarker = function(markerOptions, callback) {
     var self = this;
-    markerOptions.animation = markerOptions.animation || undefined;
-    markerOptions.position = markerOptions.position || {};
-    markerOptions.position.lat = markerOptions.position.lat || 0.0;
-    markerOptions.position.lng = markerOptions.position.lng || 0.0;
-    markerOptions.anchor = markerOptions.anchor || [0.5, 0.5];
-    markerOptions.draggable = markerOptions.draggable || false;
-    markerOptions.icon = markerOptions.icon || undefined;
-    markerOptions.snippet = markerOptions.snippet || undefined;
-    markerOptions.title = markerOptions.title !== undefined ? String(markerOptions.title) : undefined;
-    markerOptions.visible = markerOptions.visible === undefined ? true : markerOptions.visible;
-    markerOptions.flat = markerOptions.flat || false;
-    markerOptions.rotation = markerOptions.rotation || 0;
-    markerOptions.opacity = parseFloat("" + markerOptions.opacity, 10) || 1;
-    markerOptions.disableAutoPan = markerOptions.disableAutoPan === undefined ? false : markerOptions.disableAutoPan;
-    markerOptions.markerType = markerOptions.markerType || undefined;
-    markerOptions.customMarkerFirstString = markerOptions.customMarkerFirstString || undefined;
-    markerOptions.customMarkerSecondString = markerOptions.customMarkerSecondString || undefined;
-    markerOptions.mapOrientation = markerOptions.mapOrientation || undefined;
-    markerOptions.params = markerOptions.params || {};
-    if ("styles" in markerOptions) {
-        markerOptions.styles = typeof markerOptions.styles === "object" ? markerOptions.styles : {};
-
-        if ("color" in markerOptions.styles) {
-            markerOptions.styles.color = HTMLColor2RGBA(markerOptions.styles.color || "#000000");
-        }
-    }
-    if (markerOptions.icon && isHTMLColorString(markerOptions.icon)) {
-        markerOptions.icon = HTMLColor2RGBA(markerOptions.icon);
-    }
-
+    mergeMarkerOptionsWithDefaults(markerOptions);
     cordova.exec(function(result) {
-        markerOptions.hashCode = result.hashCode;
-        var marker = new Marker(self, result.id, markerOptions);
-
-        MARKERS[result.id] = marker;
-        OVERLAYS[result.id] = marker;
-
-        if (typeof markerOptions.markerClick === "function") {
-            marker.on(plugin.google.maps.event.MARKER_CLICK, markerOptions.markerClick);
-        }
-        if (typeof markerOptions.infoClick === "function") {
-            marker.on(plugin.google.maps.event.INFO_CLICK, markerOptions.infoClick);
-        }
+        marker = storeMarker.bind(self)(result, markerOptions);
         if (typeof callback === "function") {
             callback.call(self, marker, self);
         }
     }, self.errorHandler, PLUGIN_NAME, 'exec', ['Marker.createMarker', markerOptions]);
 };
+
+
+App.prototype.addMultipleMarkers = function(markersOptions, callback){
+  markersOptions.forEach( function(markerOptions){ mergeMarkerOptionsWithDefaults(markerOptions) });
+  var self = this;
+  var markers = [];
+
+  cordova.exec(function(result) {
+
+      for (i=0; i<result.length; i++){
+          markers.push( storeMarker.bind(self)(result[i], markersOptions[i])  )
+      }
+
+      if (typeof callback === "function") {
+          callback.call(self, markers, self);
+      }
+  }, self.errorHandler, PLUGIN_NAME, 'exec', ['Marker.createMultipleMarkers', markersOptions]);
+
+}
 
 
 //-------------

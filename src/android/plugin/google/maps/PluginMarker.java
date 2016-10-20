@@ -215,45 +215,48 @@ public class PluginMarker extends MyPlugin {
   }
 
   private void setIconforJustCreatedMarker(Marker marker, final JSONObject opts, Bundle bundle, final CallbackContext callbackContext) throws JSONException{
+    Log.w("client", "-- setting icon for just created marker");
     PluginAsyncInterface asyncInterface;
-    if (callbackContext != null){
+
       asyncInterface = new PluginAsyncInterface() {
 
-        @Override
-        public void onPostExecute(Object object) {
-          Marker marker = (Marker)object;
-          if (opts.has("visible")) {
+      @Override
+      public void onPostExecute(Object object) {
+        Marker marker = (Marker)object;
+        if (opts.has("visible")) {
+          try {
+            marker.setVisible(opts.getBoolean("visible"));
+          } catch (JSONException e) {}
+          } else {
+            marker.setVisible(true);
+          }
+          // Animation
+          if (opts.has("animation")) {
             try {
-              marker.setVisible(opts.getBoolean("visible"));
-            } catch (JSONException e) {}
-            } else {
-              marker.setVisible(true);
+              setAnimationForJustCreatedMarker(marker, opts.getString("animation"), callbackContext);
+            } catch (JSONException e) {
+              e.printStackTrace();
             }
-            // Animation
-            if (opts.has("animation")) {
-              try {
-                setAnimationForJustCreatedMarker(marker, opts.getString("animation"), callbackContext);
-              } catch (JSONException e) {
-                e.printStackTrace();
-              }
-            } else {
+          } else {
+            if (callbackContext != null){
               try {
                 callbackContext.success(getMarkerResultJSON(marker));
               } catch (JSONException e){
                 callbackContext.error("Error generating result JSON");
               }
+            } else {
+              Log.w("client", "-- setIconforJustCreatedMarker: callbackContext is null");
             }
           }
+        }
 
-          @Override
-          public void onError(String errorMsg) {
-            callbackContext.error(errorMsg);
-          }
+        @Override
+        public void onError(String errorMsg) {
+          callbackContext.error(errorMsg);
+        }
 
-        };
-    } else {
-      asyncInterface = noOpAsyncInterface();
-    }
+      };
+
 
     this.setIcon_(marker, bundle, asyncInterface);
   }
@@ -306,6 +309,7 @@ public class PluginMarker extends MyPlugin {
 
   @SuppressWarnings("unused")
   private Marker addMarkerToMap(MarkerOptions markerOptions, final JSONObject opts, final CallbackContext callbackContext) throws JSONException {
+    Log.w("client", "-- adding marker to map");
     Marker marker = map.addMarker(markerOptions);
     storeMarker(marker, opts);
     setIconAndAnimationForMarker(marker, opts, callbackContext);
@@ -339,6 +343,7 @@ public class PluginMarker extends MyPlugin {
     MarkerOptions markerOptions;
     Marker marker;
 
+    Log.w("client", "creating multiple markers");
 
     List<JSONObject> optsList = new ArrayList<JSONObject>();
     List<MarkerOptions> markerOptionsList = new ArrayList<MarkerOptions>();
@@ -354,6 +359,8 @@ public class PluginMarker extends MyPlugin {
       marker = addMarkerToMap(markerOptionsList.get(i), optsList.get(i), null);
       resultsJSONArray.put(getMarkerResultJSON(marker));
     }
+
+    Log.w("client", "-- added markers to map");
 
     callbackContext.success(resultsJSONArray);
   }
