@@ -124,6 +124,7 @@ var BaseClass = function() {
 
     self.errorHandler = function(msg) {
         if (msg) {
+            console.error("MapPluginError: ");
             console.error(msg);
             self.trigger('error', msg);
         }
@@ -1438,6 +1439,23 @@ Marker.prototype.remove = function(callback) {
     }, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.remove', this.getId()]);
     this.off(true);
 };
+
+App.prototype.removeMultipleMarkers = function(markers, callback) {
+    markerIds = [];
+
+    markers.forEach( function(marker){
+      delete MARKERS[marker.id];
+      markerIds.push(marker.id);
+    })
+    cordova.exec(function() {
+        if (typeof callback === "function") {
+            callback.call(markerIds);
+        }
+    }, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.removeMultipleMarkers', markerIds]);
+
+    markers.forEach( function(marker){ marker.off(true); });
+};
+
 Marker.prototype.setDisableAutoPan = function(disableAutoPan) {
     disableAutoPan = parseBoolean(disableAutoPan);
     this.set('disableAutoPan', disableAutoPan);

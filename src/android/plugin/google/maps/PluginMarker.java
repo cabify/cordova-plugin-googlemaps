@@ -693,6 +693,30 @@ public class PluginMarker extends MyPlugin {
   }
 
   /**
+   * Remove the marker
+   * @param args
+   * @param callbackContext
+   * @throws JSONException
+   */
+  @SuppressWarnings("unused")
+  private void removeMultipleMarkers(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
+    JSONArray markersToRemove = args.getJSONArray(1);
+    String id;
+
+    for(int i=0; i < markersToRemove.length(); i++){
+      id = markersToRemove.getString(i);
+      Marker marker = this.getMarker(id);
+      if (marker != null) {
+        marker.remove();
+        this.objects.remove(id);
+        String propertyId = "marker_property_" + id;
+        this.objects.remove(propertyId);
+      }
+    }
+    callbackContext.success();
+  }
+
+  /**
    * Set anchor for the icon of the marker
    * @param args
    * @param callbackContext
