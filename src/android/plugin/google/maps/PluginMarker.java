@@ -69,12 +69,12 @@ public class PluginMarker extends MyPlugin {
 
       @Override
       public void onPostExecute(Object object){
-        Log.w("client", "noOpAsyncInterface onPostExecute");
+        Log.d("client", "noOpAsyncInterface onPostExecute");
       }
 
       @Override
       public void onError(String errorMsg){
-        Log.w("client", "noOpAsyncInterface onError: " + errorMsg);
+        Log.d("client", "noOpAsyncInterface onError: " + errorMsg);
       }
     };
   }
@@ -215,7 +215,7 @@ public class PluginMarker extends MyPlugin {
   }
 
   private void setIconforJustCreatedMarker(Marker marker, final JSONObject opts, Bundle bundle, final CallbackContext callbackContext) throws JSONException{
-    Log.w("client", "-- setting icon for just created marker");
+    Log.d("client", "-- setting icon for just created marker");
     PluginAsyncInterface asyncInterface;
 
       asyncInterface = new PluginAsyncInterface() {
@@ -245,7 +245,7 @@ public class PluginMarker extends MyPlugin {
                 callbackContext.error("Error generating result JSON");
               }
             } else {
-              Log.w("client", "-- setIconforJustCreatedMarker: callbackContext is null");
+              Log.d("client", "-- setIconforJustCreatedMarker: callbackContext is null");
             }
           }
         }
@@ -309,7 +309,7 @@ public class PluginMarker extends MyPlugin {
 
   @SuppressWarnings("unused")
   private Marker addMarkerToMap(MarkerOptions markerOptions, final JSONObject opts, final CallbackContext callbackContext) throws JSONException {
-    Log.w("client", "-- adding marker to map");
+    Log.d("client", "-- adding marker to map");
     Marker marker = map.addMarker(markerOptions);
     storeMarker(marker, opts);
     setIconAndAnimationForMarker(marker, opts, callbackContext);
@@ -343,7 +343,7 @@ public class PluginMarker extends MyPlugin {
     MarkerOptions markerOptions;
     Marker marker;
 
-    Log.w("client", "creating multiple markers");
+    Log.d("client", "creating multiple markers");
 
     List<JSONObject> optsList = new ArrayList<JSONObject>();
     List<MarkerOptions> markerOptionsList = new ArrayList<MarkerOptions>();
@@ -360,7 +360,7 @@ public class PluginMarker extends MyPlugin {
       resultsJSONArray.put(getMarkerResultJSON(marker));
     }
 
-    Log.w("client", "-- added markers to map");
+    Log.d("client", "-- added markers to map");
 
     callbackContext.success(resultsJSONArray);
   }
