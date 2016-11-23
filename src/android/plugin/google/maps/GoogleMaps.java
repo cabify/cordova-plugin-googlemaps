@@ -708,25 +708,25 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
     CameraPosition position = map.getCameraPosition();
     String cameraPositionString = CameraPositionParser.toString(position);
 
-    String touchEventName = "";
-
-    switch (event.getAction() & MotionEvent.ACTION_MASK) {
-      case MotionEvent.ACTION_POINTER_DOWN:
-        touchEventName = "mapzoomstart";
-        break;
-      case MotionEvent.ACTION_POINTER_UP:
-        touchEventName = "mapzoomend";
-        break;
-      case MotionEvent.ACTION_UP:
-        touchEventName = "maptouchend";
-        break;
-      case MotionEvent.ACTION_DOWN:
-        touchEventName = "maptouchstart";
-        break;
-    }
+    String touchEventName = getEventName(event);
 
     if (touchEventName.length() != 0) {
       webView.loadUrl("javascript:plugin.google.maps.Map._onCameraEvent('" + touchEventName + "', " + cameraPositionString + ")");
+    }
+  }
+
+  private String getEventName(MotionEvent event) {
+    switch (event.getAction() & MotionEvent.ACTION_MASK) {
+      case MotionEvent.ACTION_POINTER_DOWN:
+        return "mapzoomstart";
+      case MotionEvent.ACTION_POINTER_UP:
+        return "mapzoomend";
+      case MotionEvent.ACTION_UP:
+        return "maptouchend";
+      case MotionEvent.ACTION_DOWN:
+        return "maptouchstart";
+      default:
+        return "";
     }
   }
 
