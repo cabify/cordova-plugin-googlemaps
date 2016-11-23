@@ -586,20 +586,8 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
     mapView = new MapView(activity, options) {
       @Override
       public boolean dispatchTouchEvent(MotionEvent ev) {
-        switch (ev.getAction() & MotionEvent.ACTION_MASK) {
-          case MotionEvent.ACTION_POINTER_DOWN:
-            fingers = fingers + 1;
-            break;
-          case MotionEvent.ACTION_POINTER_UP:
-            fingers = fingers - 1;
-            break;
-          case MotionEvent.ACTION_UP:
-            fingers = 0;
-            break;
-          case MotionEvent.ACTION_DOWN:
-            fingers = 1;
-            break;
-        }
+        updateFingersOnMotionEvent(ev);
+
         if (fingers > 1) {
           disableScrolling();
         } else if (fingers < 1) {
@@ -696,6 +684,23 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
       }
     });
 
+  }
+
+  private void updateFingersOnMotionEvent(MotionEvent event) {
+    switch (event.getAction() & MotionEvent.ACTION_MASK) {
+      case MotionEvent.ACTION_POINTER_DOWN:
+        fingers = fingers + 1;
+        break;
+      case MotionEvent.ACTION_POINTER_UP:
+        fingers = fingers - 1;
+        break;
+      case MotionEvent.ACTION_UP:
+        fingers = 0;
+        break;
+      case MotionEvent.ACTION_DOWN:
+        fingers = 1;
+        break;
+    }
   }
 
   private void enableScrolling() {
