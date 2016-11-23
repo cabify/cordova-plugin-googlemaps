@@ -583,7 +583,7 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
       options.camera(builder.build());
     }
 
-     mapView = new MapView(activity, options) {
+    mapView = new MapView(activity, options) {
       @Override
       public boolean dispatchTouchEvent(MotionEvent ev) {
         switch (ev.getAction() & MotionEvent.ACTION_MASK) {
@@ -1663,25 +1663,9 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
   @Override
   public void onCameraIdle() {
     CameraPosition position = map.getCameraPosition();
-    JSONObject params = new JSONObject();
-    String jsonStr = "";
+    String cameraPositionString = CameraPositionParser.toString(position);
 
-    try {
-      JSONObject target = new JSONObject();
-      target.put("lat", position.target.latitude);
-      target.put("lng", position.target.longitude);
-      params.put("target", target);
-      params.put("hashCode", position.hashCode());
-      params.put("bearing", position.bearing);
-      params.put("tilt", position.tilt);
-      params.put("zoom", position.zoom);
-      jsonStr = params.toString();
-    } catch (JSONException e) {
-      e.printStackTrace();
-    }
-
-
-    webView.loadUrl("javascript:plugin.google.maps.Map._onCameraEvent('camera_change', " + jsonStr + ")");
+    webView.loadUrl("javascript:plugin.google.maps.Map._onCameraEvent('camera_change', " + cameraPositionString + ")");
   }
 
 
