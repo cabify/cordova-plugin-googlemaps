@@ -591,7 +591,7 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
 
         if (fingers > 1) {
           disableScrolling();
-        } else if (fingers < 1) {
+        } else if (fingers <= 1) {
           enableScrolling();
         }
         if (fingers > 1) {
