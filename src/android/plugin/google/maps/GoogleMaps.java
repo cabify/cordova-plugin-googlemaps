@@ -717,14 +717,10 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
 
   private String getEventName(MotionEvent event) {
     switch (event.getAction() & MotionEvent.ACTION_MASK) {
-      case MotionEvent.ACTION_POINTER_DOWN:
-        return "mapzoomstart";
       case MotionEvent.ACTION_POINTER_UP:
         return "mapzoomend";
       case MotionEvent.ACTION_UP:
         return "maptouchend";
-      case MotionEvent.ACTION_DOWN:
-        return "maptouchstart";
       default:
         return "";
     }
