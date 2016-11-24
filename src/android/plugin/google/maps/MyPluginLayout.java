@@ -285,16 +285,6 @@ public class MyPluginLayout extends FrameLayout  {
     this.frontLayer.invalidate();
   }
 
-  public void dragStartsAt(float x, float y){
-    mapDragging = true;
-    previousXPosition = x;
-    previousYPosition = y;
-  }
-
-  public void dragEnds() {
-    mapDragging = false;
-  }
-
 
   @Override
   public boolean dispatchTouchEvent(MotionEvent event) {
@@ -302,7 +292,6 @@ public class MyPluginLayout extends FrameLayout  {
 
     if (mapDragging){
       if (action == MotionEvent.ACTION_UP){
-        dragEnds();
         myWebView.loadUrl( "javascript:plugin.google.maps.Map._onTouchEvent('maptouchend');");
       }
 
@@ -373,7 +362,6 @@ public class MyPluginLayout extends FrameLayout  {
       } else {
         String eventName = null;
         if (action == MotionEvent.ACTION_DOWN){
-          MyPluginLayout.this.dragStartsAt(event.getX(), event.getY());          
           myWebView.loadUrl( "javascript:plugin.google.maps.Map._onTouchEvent('maptouchstart');");
         }
       }
