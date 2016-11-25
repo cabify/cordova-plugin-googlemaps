@@ -4,7 +4,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import org.json.JSONObject;
 import org.json.JSONException;
 
-public class CameraPositionParser {
+public class CameraPositionSerializer {
 
   public static String toString (CameraPosition position) {
   	JSONObject params = new JSONObject();

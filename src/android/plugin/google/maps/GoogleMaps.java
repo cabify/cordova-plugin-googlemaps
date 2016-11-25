@@ -591,7 +591,7 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
 
         if (fingers > 1) {
           disableScrolling();
-        } else if (fingers <= 1) {
+        } else if (fingers < 1) {
           enableScrolling();
         }
         if (fingers > 1) {
@@ -706,7 +706,7 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
 
   private void fireOnTouchEvent(MotionEvent event) {
     CameraPosition position = map.getCameraPosition();
-    String cameraPositionString = CameraPositionParser.toString(position);
+    String cameraPositionString = CameraPositionSerializer.toString(position);
 
     String touchEventName = getEventName(event);
 
@@ -1691,7 +1691,7 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
   @Override
   public void onCameraIdle() {
     CameraPosition position = map.getCameraPosition();
-    String cameraPositionString = CameraPositionParser.toString(position);
+    String cameraPositionString = CameraPositionSerializer.toString(position);
 
     webView.loadUrl("javascript:plugin.google.maps.Map._onCameraEvent('camera_change', " + cameraPositionString + ")");
   }
