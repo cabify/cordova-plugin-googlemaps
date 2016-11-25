@@ -1071,49 +1071,54 @@ public class PluginMarker extends MyPlugin {
             return;
           }
 
-          BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(image);
-          marker.setIcon(bitmapDescriptor);
+          try {
+            BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(image);
+            marker.setIcon(bitmapDescriptor);
 
-          // Save the information for the anchor property
-          Bundle imageSize = new Bundle();
-          imageSize.putInt("width", image.getWidth());
-          imageSize.putInt("height", image.getHeight());
-          PluginMarker.this.objects.put("imageSize", imageSize);
+            // Save the information for the anchor property
+            Bundle imageSize = new Bundle();
+            imageSize.putInt("width", image.getWidth());
+            imageSize.putInt("height", image.getHeight());
+            PluginMarker.this.objects.put("imageSize", imageSize);
 
-          // The `anchor` of the `icon` property
-          if (iconProperty.containsKey("anchor") == true) {
-            double[] anchor = iconProperty.getDoubleArray("anchor");
-            if (anchor.length == 2) {
-              _setIconAnchor(marker, anchor[0], anchor[1], imageSize.getInt("width"), imageSize.getInt("height"));
-            }
-          }
-
-
-          // Insert here our estimation marker
-          if (iconProperty.containsKey("markerType") && iconProperty.getString("markerType") != null
-                  && iconProperty.getString("markerType").equals("infowindow")) {
-            // Custom Cabify Marker
-            if (iconProperty.containsKey("firstString") && iconProperty.containsKey("secondString")) {
-              String firstString = iconProperty.getString("firstString");
-              String secondString = iconProperty.getString("secondString");
-              if (map != null) {
-                customInfoWindowAdapter = new CustomInfoWindowAdapter(getContext());
-                map.setInfoWindowAdapter(customInfoWindowAdapter);
-                customInfoWindowAdapter.updateInfoWindowText(marker, firstString, secondString);
+            // The `anchor` of the `icon` property
+            if (iconProperty.containsKey("anchor") == true) {
+              double[] anchor = iconProperty.getDoubleArray("anchor");
+              if (anchor.length == 2) {
+                _setIconAnchor(marker, anchor[0], anchor[1], imageSize.getInt("width"), imageSize.getInt("height"));
               }
-
             }
-          }
 
-          // The `anchor` property for the infoWindow
-          if (iconProperty.containsKey("infoWindowAnchor") == true) {
-            double[] anchor = iconProperty.getDoubleArray("infoWindowAnchor");
-            if (anchor.length == 2) {
-              _setInfoWindowAnchor(marker, anchor[0], anchor[1], imageSize.getInt("width"), imageSize.getInt("height"));
+
+            // Insert here our estimation marker
+            if (iconProperty.containsKey("markerType") && iconProperty.getString("markerType") != null
+                    && iconProperty.getString("markerType").equals("infowindow")) {
+              // Custom Cabify Marker
+              if (iconProperty.containsKey("firstString") && iconProperty.containsKey("secondString")) {
+                String firstString = iconProperty.getString("firstString");
+                String secondString = iconProperty.getString("secondString");
+                if (map != null) {
+                  customInfoWindowAdapter = new CustomInfoWindowAdapter(getContext());
+                  map.setInfoWindowAdapter(customInfoWindowAdapter);
+                  customInfoWindowAdapter.updateInfoWindowText(marker, firstString, secondString);
+                }
+
+              }
             }
-          }
 
-          callback.onPostExecute(marker);
+            // The `anchor` property for the infoWindow
+            if (iconProperty.containsKey("infoWindowAnchor") == true) {
+              double[] anchor = iconProperty.getDoubleArray("infoWindowAnchor");
+              if (anchor.length == 2) {
+                _setInfoWindowAnchor(marker, anchor[0], anchor[1], imageSize.getInt("width"), imageSize.getInt("height"));
+              }
+            }
+
+            callback.onPostExecute(marker);
+
+          } catch (java.lang.IllegalArgumentException e) {
+            e.printStackTrace();
+          }
         }
 
       };
