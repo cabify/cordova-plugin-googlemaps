@@ -680,16 +680,12 @@ public class PluginMarker extends MyPlugin {
   private void remove(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
     String id = args.getString(1);
     Marker marker = this.getMarker(id);
-    if (marker == null) {
+    if (marker != null) {
+      removeMarker(marker, id);
+      this.sendNoResult(callbackContext);
+    } else {
       callbackContext.success();
-      return;
     }
-    marker.remove();
-    this.objects.remove(id);
-
-    String propertyId = "marker_property_" + id;
-    this.objects.remove(propertyId);
-    this.sendNoResult(callbackContext);
   }
 
   /**
@@ -707,13 +703,17 @@ public class PluginMarker extends MyPlugin {
       id = markersToRemove.getString(i);
       Marker marker = this.getMarker(id);
       if (marker != null) {
-        marker.remove();
-        this.objects.remove(id);
-        String propertyId = "marker_property_" + id;
-        this.objects.remove(propertyId);
+        removeMarker(marker, id);
       }
     }
     callbackContext.success();
+  }
+
+  private void removeMarker(Marker marker, String id) {
+    marker.remove();
+    this.objects.remove(id);
+    String propertyId = "marker_property_" + id;
+    this.objects.remove(propertyId);
   }
 
   /**
