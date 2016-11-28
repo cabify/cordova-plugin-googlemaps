@@ -2660,6 +2660,7 @@ module.exports = {
         TOUCH_START: 'maptouchstart',
         TOUCH_MOVE: 'maptouchmove',
         TOUCH_END: 'maptouchend',
+        ZOOM_END: 'mapzoomend',
         MAP_READY: 'map_ready',
         MAP_LOADED: 'map_loaded', //for Android
         MAP_WILL_MOVE: 'will_move', //for iOS

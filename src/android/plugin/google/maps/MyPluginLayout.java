@@ -48,10 +48,7 @@ public class MyPluginLayout extends FrameLayout  {
   private boolean isClickable = true;
   private Map<String, RectF> HTMLNodes = new HashMap<String, RectF>();
   private Activity mActivity = null;
-  private boolean mapDragging = false;
 
-  private float previousXPosition;
-  private float previousYPosition;
 
   @SuppressLint("NewApi")
   public MyPluginLayout(CordovaWebView webView, Activity activity) {
@@ -285,43 +282,6 @@ public class MyPluginLayout extends FrameLayout  {
     this.frontLayer.invalidate();
   }
 
-  public void dragStartsAt(float x, float y){
-    mapDragging = true;
-    previousXPosition = x;
-    previousYPosition = y;
-  }
-
-  public void dragEnds() {
-    mapDragging = false;
-  }
-
-
-  @Override
-  public boolean dispatchTouchEvent(MotionEvent event) {
-    int action = event.getAction();
-
-    if (mapDragging){
-      if (action == MotionEvent.ACTION_UP){
-        dragEnds();
-        myWebView.loadUrl( "javascript:plugin.google.maps.Map._onTouchEvent('maptouchend');");
-      }
-
-      if (action == MotionEvent.ACTION_MOVE){
-        float currentXPosition = event.getX();
-        float currentYPosition = event.getY();
-
-        if (currentXPosition != previousXPosition || currentYPosition != previousYPosition ){
-          previousXPosition = currentXPosition;
-          previousYPosition = currentYPosition;
-          myWebView.loadUrl( "javascript:plugin.google.maps.Map._onTouchEvent('maptouchmove');");
-        }
-
-      }
-
-    }
-
-    return super.dispatchTouchEvent(event);
-  }
 
   private class FrontLayerLayout extends FrameLayout {
 
@@ -373,7 +333,6 @@ public class MyPluginLayout extends FrameLayout  {
       } else {
         String eventName = null;
         if (action == MotionEvent.ACTION_DOWN){
-          MyPluginLayout.this.dragStartsAt(event.getX(), event.getY());          
           myWebView.loadUrl( "javascript:plugin.google.maps.Map._onTouchEvent('maptouchstart');");
         }
       }

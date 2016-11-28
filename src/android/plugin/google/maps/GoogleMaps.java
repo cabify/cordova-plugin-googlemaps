@@ -583,23 +583,12 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
       options.camera(builder.build());
     }
 
-     mapView = new MapView(activity, options) {
+    mapView = new MapView(activity, options) {
       @Override
       public boolean dispatchTouchEvent(MotionEvent ev) {
-        switch (ev.getAction() & MotionEvent.ACTION_MASK) {
-          case MotionEvent.ACTION_POINTER_DOWN:
-            fingers = fingers + 1;
-            break;
-          case MotionEvent.ACTION_POINTER_UP:
-            fingers = fingers - 1;
-            break;
-          case MotionEvent.ACTION_UP:
-            fingers = 0;
-            break;
-          case MotionEvent.ACTION_DOWN:
-            fingers = 1;
-            break;
-        }
+        updateFingersOnMotionEvent(ev);
+        fireOnTouchEvent(ev);
+
         if (fingers > 1) {
           disableScrolling();
         } else if (fingers < 1) {
@@ -696,6 +685,45 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
       }
     });
 
+  }
+
+  private void updateFingersOnMotionEvent(MotionEvent event) {
+    switch (event.getAction() & MotionEvent.ACTION_MASK) {
+      case MotionEvent.ACTION_POINTER_DOWN:
+        fingers = fingers + 1;
+        break;
+      case MotionEvent.ACTION_POINTER_UP:
+        fingers = fingers - 1;
+        break;
+      case MotionEvent.ACTION_UP:
+        fingers = 0;
+        break;
+      case MotionEvent.ACTION_DOWN:
+        fingers = 1;
+        break;
+    }
+  }
+
+  private void fireOnTouchEvent(MotionEvent event) {
+    CameraPosition position = map.getCameraPosition();
+    String cameraPositionString = CameraPositionSerializer.toString(position);
+
+    String touchEventName = getEventName(event);
+
+    if (touchEventName.length() != 0) {
+      webView.loadUrl("javascript:plugin.google.maps.Map._onCameraEvent('" + touchEventName + "', " + cameraPositionString + ")");
+    }
+  }
+
+  private String getEventName(MotionEvent event) {
+    switch (event.getAction() & MotionEvent.ACTION_MASK) {
+      case MotionEvent.ACTION_POINTER_UP:
+        return "mapzoomend";
+      case MotionEvent.ACTION_UP:
+        return "maptouchend";
+      default:
+        return "";
+    }
   }
 
   private void enableScrolling() {
@@ -1663,25 +1691,9 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
   @Override
   public void onCameraIdle() {
     CameraPosition position = map.getCameraPosition();
-    JSONObject params = new JSONObject();
-    String jsonStr = "";
+    String cameraPositionString = CameraPositionSerializer.toString(position);
 
-    try {
-      JSONObject target = new JSONObject();
-      target.put("lat", position.target.latitude);
-      target.put("lng", position.target.longitude);
-      params.put("target", target);
-      params.put("hashCode", position.hashCode());
-      params.put("bearing", position.bearing);
-      params.put("tilt", position.tilt);
-      params.put("zoom", position.zoom);
-      jsonStr = params.toString();
-    } catch (JSONException e) {
-      e.printStackTrace();
-    }
-
-
-    webView.loadUrl("javascript:plugin.google.maps.Map._onCameraEvent('camera_change', " + jsonStr + ")");
+    webView.loadUrl("javascript:plugin.google.maps.Map._onCameraEvent('camera_change', " + cameraPositionString + ")");
   }
 
 
