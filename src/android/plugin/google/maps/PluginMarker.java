@@ -1,12 +1,15 @@
 package plugin.google.maps;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Locale;
-import java.util.List;
-import java.util.ArrayList;
+import com.google.android.gms.maps.Projection;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.ui.IconGenerator;
 
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaResourceApi;
@@ -16,7 +19,6 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -31,28 +33,24 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 
-import plugin.google.maps.FakedR;
-import com.google.android.gms.maps.Projection;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.ui.IconGenerator;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class PluginMarker extends MyPlugin {
 
   private PicassoMarker picassoMarker;
+  private RoundedVehicleMarker roundedVehicleMarker;
   private AsyncLoadImageInterface asyncLoadImageInterface;
+
 
   private enum Animation {
     DROP,
@@ -177,6 +175,9 @@ public class PluginMarker extends MyPlugin {
     }
     if (opts.has("mapOrientation")) {
         bundle.putString("mapOrientation", opts.getString("mapOrientation"));
+    }
+    if (opts.has("journeyCar")) {
+      bundle.putBoolean("journeyCar", opts.getBoolean("journeyCar"));
     }
     return bundle;
   }
@@ -1020,23 +1021,6 @@ public class PluginMarker extends MyPlugin {
                 }
               }
 
-              // Check if we have a fucking info window to paint
-              // Insert here our estimation marker
-              if (iconProperty.containsKey("markerType") && iconProperty.getString("markerType") != null
-                      && iconProperty.getString("markerType").equals("infowindow")) {
-                // Custom Cabify Marker
-                if (iconProperty.containsKey("firstString") && iconProperty.containsKey("secondString")) {
-                  String firstString = iconProperty.getString("firstString");
-                  String secondString = iconProperty.getString("secondString");
-                  if(map != null){
-                    customInfoWindowAdapter = new CustomInfoWindowAdapter(getContext());
-                    map.setInfoWindowAdapter(customInfoWindowAdapter);
-                    customInfoWindowAdapter.updateInfoWindowText(marker, firstString, secondString);
-                  }
-
-                }
-              }
-
               callback.onPostExecute(marker);
 
               } catch (java.lang.IllegalArgumentException e) {
@@ -1089,23 +1073,6 @@ public class PluginMarker extends MyPlugin {
               }
             }
 
-
-            // Insert here our estimation marker
-            if (iconProperty.containsKey("markerType") && iconProperty.getString("markerType") != null
-                    && iconProperty.getString("markerType").equals("infowindow")) {
-              // Custom Cabify Marker
-              if (iconProperty.containsKey("firstString") && iconProperty.containsKey("secondString")) {
-                String firstString = iconProperty.getString("firstString");
-                String secondString = iconProperty.getString("secondString");
-                if (map != null) {
-                  customInfoWindowAdapter = new CustomInfoWindowAdapter(getContext());
-                  map.setInfoWindowAdapter(customInfoWindowAdapter);
-                  customInfoWindowAdapter.updateInfoWindowText(marker, firstString, secondString);
-                }
-
-              }
-            }
-
             // The `anchor` property for the infoWindow
             if (iconProperty.containsKey("infoWindowAnchor") == true) {
               double[] anchor = iconProperty.getDoubleArray("infoWindowAnchor");
@@ -1123,17 +1090,30 @@ public class PluginMarker extends MyPlugin {
 
       };
 
-      picassoMarker = new PicassoMarker(callback, asyncLoadImageInterface);
-      RequestCreator requestCreator = Picasso.with(this.cordova.getActivity())
-              .load(iconUrl);
+        RequestCreator requestCreator = Picasso.with(this.cordova.getActivity())
+                    .load(iconUrl);
 
-      if(width != -1 || height != -1){
-        requestCreator = requestCreator.resize(width,height);
-      }
+        if (isAJourneyCarMarker(iconProperty)) {
+            roundedVehicleMarker =
+                    new RoundedVehicleMarker(callback, asyncLoadImageInterface, this.cordova.getActivity());
+            roundedVehicleMarker.buildIconRequestCreator(requestCreator);
+            requestCreator.into(roundedVehicleMarker);
 
-      requestCreator.into(picassoMarker);
+        } else {
+            picassoMarker = new PicassoMarker(callback, asyncLoadImageInterface);
+
+            if (width != -1 || height != -1) {
+                requestCreator = requestCreator.resize(width, height);
+            }
+
+            requestCreator.into(picassoMarker);
+        }
 
     }
+  }
+
+  private boolean isAJourneyCarMarker(Bundle iconProperty) {
+    return iconProperty.getBoolean("journeyCar");
   }
 
   private void _setIconAnchor(Marker marker, double anchorX, double anchorY, int imageWidth, int imageHeight) {

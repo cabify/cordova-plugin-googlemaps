@@ -1,16 +1,10 @@
 package plugin.google.maps;
 
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 
 public class PicassoMarker implements Target {
 
