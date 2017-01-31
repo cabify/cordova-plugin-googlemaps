@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.CameraPosition.Builder;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.VisibleRegion;
+import com.google.android.gms.maps.model.MapStyleOptions;
 
 public class PluginMap extends MyPlugin {
   /**
@@ -29,6 +30,15 @@ public class PluginMap extends MyPlugin {
    * @param callbackContext
    * @throws JSONException
    */
+
+  private void setStyle(JSONArray args, CallbackContext callbackContext) throws JSONException {
+    try {
+      map.setMapStyle(new MapStyleOptions(args.get(1).toString()));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   @SuppressWarnings("unused")
   private void setOptions(JSONArray args, CallbackContext callbackContext) throws JSONException {
 
