@@ -446,6 +446,10 @@ App.prototype.closeDialog = function() {
     cordova.exec(null, this.errorHandler, PLUGIN_NAME, 'closeDialog', []);
 };
 
+App.prototype.setStyle = function(style) {
+    cordova.exec(null, this.errorHandler, PLUGIN_NAME, 'exec', ['Map.setStyle', style]);
+}
+
 App.prototype.setOptions = function(options) {
     options = options || {};
     if (options.hasOwnProperty('backgroundColor')) {
