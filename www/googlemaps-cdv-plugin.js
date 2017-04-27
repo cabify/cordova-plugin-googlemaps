@@ -1048,6 +1048,7 @@ var mergeMarkerOptionsWithDefaults = function(markerOptions){
   markerOptions.anchor = markerOptions.anchor || [0.5, 0.5];
   markerOptions.draggable = markerOptions.draggable || false;
   markerOptions.icon = markerOptions.icon || undefined;
+  markerOptions.type = markerOptions.type || undefined;
   markerOptions.snippet = markerOptions.snippet || undefined;
   markerOptions.title = markerOptions.title !== undefined ? String(markerOptions.title) : undefined;
   markerOptions.visible = markerOptions.visible === undefined ? true : markerOptions.visible;
@@ -1458,6 +1459,15 @@ App.prototype.removeMultipleMarkers = function(markers, callback) {
     }, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.removeMultipleMarkers', markerIds]);
 
     markers.forEach( function(marker){ marker.off(true); });
+};
+
+App.prototype.removeMultipleMarkersByType = function(type, callback) {
+    debugger
+    cordova.exec(function() {
+        if (typeof callback === "function") {
+            callback.call(self);
+        }
+    }, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.removeMultipleMarkersByType', type]);
 };
 
 Marker.prototype.setDisableAutoPan = function(disableAutoPan) {

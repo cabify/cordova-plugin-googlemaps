@@ -42,6 +42,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -268,6 +269,10 @@ public class PluginMarker extends MyPlugin {
     this.objects.put(id, marker);
 
     JSONObject properties = new JSONObject();
+    if (opts.has("type")) {
+      properties.put("type", opts.getString("type"));
+      properties.put("marker_id", id);
+    }
     if (opts.has("styles")) {
       properties.put("styles", opts.getJSONObject("styles"));
     }
@@ -705,6 +710,24 @@ public class PluginMarker extends MyPlugin {
       Marker marker = this.getMarker(id);
       if (marker != null) {
         removeMarker(marker, id);
+      }
+    }
+    callbackContext.success();
+  }
+
+  @SuppressWarnings("unused")
+  private void removeMultipleMarkersByType(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
+    String typeToRemove = args.getString(1);
+
+    for (HashMap.Entry<String, Object> entry : this.objects.entrySet()) {
+      Object properties = entry.getValue();
+      if (properties instanceof JSONObject) {
+        String type = ((JSONObject)properties).getString("type");
+        if (type == typeToRemove) {
+          String id = ((JSONObject)properties).getString("marker_id");
+          Marker marker = this.getMarker(id);
+          removeMarker(marker, id);
+        }
       }
     }
     callbackContext.success();
