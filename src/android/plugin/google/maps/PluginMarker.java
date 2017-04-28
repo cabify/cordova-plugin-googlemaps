@@ -723,10 +723,12 @@ public class PluginMarker extends MyPlugin {
       Object properties = entry.getValue();
       if (properties instanceof JSONObject) {
         String type = ((JSONObject)properties).getString("type");
-        if (type == typeToRemove) {
+        if (type.equals(typeToRemove)) {
           String id = ((JSONObject)properties).getString("marker_id");
           Marker marker = this.getMarker(id);
-          removeMarker(marker, id);
+          if (marker != null) {
+            removeMarker(marker, id);
+          }
         }
       }
     }
