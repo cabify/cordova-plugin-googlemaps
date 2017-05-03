@@ -743,7 +743,6 @@ public class PluginMarker extends MyPlugin {
 
   private void removeMarker(Marker marker, String id) {
     try {
-      Log.e("remove", "--------removeMarker");
       marker.remove();
       this.objects.remove(id);
       String propertyId = "marker_property_" + id;
