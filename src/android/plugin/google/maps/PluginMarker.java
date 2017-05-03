@@ -718,22 +718,27 @@ public class PluginMarker extends MyPlugin {
   @SuppressWarnings("unused")
   private void removeMultipleMarkersByType(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
     String typeToRemove = args.getString(1);
+    HashMap<String, Object> ObjectsCopy = new HashMap<String, Object>(this.objects);
+    JSONArray markersToRemove = new JSONArray();
 
-    for (HashMap.Entry<String, Object> entry : this.objects.entrySet()) {
+    for (HashMap.Entry<String, Object> entry : ObjectsCopy.entrySet()) {
       Object properties = entry.getValue();
       if (properties instanceof JSONObject) {
-        String type = ((JSONObject)properties).getString("type");
-        if (type.equals(typeToRemove)) {
-          String id = ((JSONObject)properties).getString("marker_id");
-          Marker marker = this.getMarker(id);
-          Log.e("remove", id);
-          if (marker != null) {
-            removeMarker(marker, id);
+        if (((JSONObject)properties).has("type")) {
+          String type = ((JSONObject)properties).getString("type");
+          if (type.equals(typeToRemove)) {
+            String id = ((JSONObject)properties).getString("marker_id");
+            String marker_id = "marker_" + id;
+            Marker marker = this.getMarker(marker_id);
+            if (marker != null) {
+              markersToRemove.put(marker_id);
+              removeMarker(marker, id);
+            }
           }
         }
       }
     }
-    callbackContext.success();
+    callbackContext.success(markersToRemove);
   }
 
   private void removeMarker(Marker marker, String id) {

@@ -1446,7 +1446,8 @@ Marker.prototype.remove = function(callback) {
 };
 
 App.prototype.removeMultipleMarkers = function(markers, callback) {
-    markerIds = [];
+    var self = this;
+    var markerIds = [];
 
     markers.forEach( function(marker){
       delete MARKERS[marker.id];
@@ -1454,7 +1455,7 @@ App.prototype.removeMultipleMarkers = function(markers, callback) {
     })
     cordova.exec(function() {
         if (typeof callback === "function") {
-            callback.call(markerIds);
+            callback.call(self, markers, self);
         }
     }, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.removeMultipleMarkers', markerIds]);
 
@@ -1462,9 +1463,20 @@ App.prototype.removeMultipleMarkers = function(markers, callback) {
 };
 
 App.prototype.removeMultipleMarkersByType = function(type, callback) {
-    cordova.exec(function() {
+    var self = this;
+    markers = [];
+
+    cordova.exec(function(markerIds) {
+
+        markerIds.forEach(function(id){
+            var marker = MARKERS[id];
+            markers.push(marker)
+            marker.off(true)
+            delete MARKERS[id];
+        })
+
         if (typeof callback === "function") {
-            callback.call();
+            callback.call(self, markers, self);
         }
     }, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.removeMultipleMarkersByType', type]);
 };
