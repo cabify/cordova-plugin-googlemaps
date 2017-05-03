@@ -1462,10 +1462,9 @@ App.prototype.removeMultipleMarkers = function(markers, callback) {
 };
 
 App.prototype.removeMultipleMarkersByType = function(type, callback) {
-    var self = this;
     cordova.exec(function() {
         if (typeof callback === "function") {
-            callback.call(self);
+            callback.call();
         }
     }, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.removeMultipleMarkersByType', type]);
 };

@@ -271,7 +271,7 @@ public class PluginMarker extends MyPlugin {
     JSONObject properties = new JSONObject();
     if (opts.has("type")) {
       properties.put("type", opts.getString("type"));
-      properties.put("marker_id", id);
+      properties.put("marker_id", marker.getId());
     }
     if (opts.has("styles")) {
       properties.put("styles", opts.getJSONObject("styles"));
@@ -726,6 +726,7 @@ public class PluginMarker extends MyPlugin {
         if (type.equals(typeToRemove)) {
           String id = ((JSONObject)properties).getString("marker_id");
           Marker marker = this.getMarker(id);
+          Log.e("remove", id);
           if (marker != null) {
             removeMarker(marker, id);
           }
@@ -737,6 +738,7 @@ public class PluginMarker extends MyPlugin {
 
   private void removeMarker(Marker marker, String id) {
     try {
+      Log.e("remove", "--------removeMarker");
       marker.remove();
       this.objects.remove(id);
       String propertyId = "marker_property_" + id;
