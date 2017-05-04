@@ -271,7 +271,7 @@ public class PluginMarker extends MyPlugin {
     JSONObject properties = new JSONObject();
     if (opts.has("type")) {
       properties.put("type", opts.getString("type"));
-      properties.put("marker_id", marker.getId());
+      properties.put("markerId", marker.getId());
     }
     if (opts.has("styles")) {
       properties.put("styles", opts.getJSONObject("styles"));
@@ -718,20 +718,20 @@ public class PluginMarker extends MyPlugin {
   @SuppressWarnings("unused")
   private void removeMultipleMarkersByType(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
     String typeToRemove = args.getString(1);
-    HashMap<String, Object> ObjectsCopy = new HashMap<String, Object>(this.objects);
+    HashMap<String, Object> objectsCopy = new HashMap<String, Object>(this.objects);
     JSONArray markersToRemove = new JSONArray();
 
-    for (HashMap.Entry<String, Object> entry : ObjectsCopy.entrySet()) {
+    for (HashMap.Entry<String, Object> entry : objectsCopy.entrySet()) {
       Object properties = entry.getValue();
       if (properties instanceof JSONObject) {
         if (((JSONObject)properties).has("type")) {
           String type = ((JSONObject)properties).getString("type");
           if (type.equals(typeToRemove)) {
-            String id = ((JSONObject)properties).getString("marker_id");
-            String marker_id = "marker_" + id;
-            Marker marker = this.getMarker(marker_id);
+            String id = ((JSONObject)properties).getString("markerId");
+            String markerId = "marker_" + id;
+            Marker marker = this.getMarker(markerId);
             if (marker != null) {
-              markersToRemove.put(marker_id);
+              markersToRemove.put(markerId);
               removeMarker(marker, id);
             }
           }
