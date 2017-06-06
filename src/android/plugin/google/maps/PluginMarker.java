@@ -724,10 +724,11 @@ public class PluginMarker extends MyPlugin {
     for (HashMap.Entry<String, Object> entry : objectsCopy.entrySet()) {
       Object properties = entry.getValue();
       if (properties instanceof JSONObject) {
-        if (((JSONObject)properties).has("type")) {
-          String type = ((JSONObject)properties).getString("type");
+        JSONObject jsonObject = (JSONObject)properties;
+        if jsonObject.has("type") {
+          String type = jsonObject.getString("type");
           if (type.equals(typeToRemove)) {
-            String id = ((JSONObject)properties).getString("markerId");
+            String id = jsonObject.getString("markerId");
             String markerId = "marker_" + id;
             Marker marker = this.getMarker(markerId);
             if (marker != null) {
