@@ -91,6 +91,18 @@
         <source-file src="src/android/res/estimation/drawable-xxhdpi/ic_marker_destination_left.9.png" target-dir="res/drawable-xxhdpi"/>
         <source-file src="src/android/res/estimation/drawable-xxxhdpi/ic_marker_destination_left.9.png" target-dir="res/drawable-xxxhdpi"/>
 
+        <source-file src="src/android/res/infoEstimation/drawable-hdpi/ic_marker_destination_right_info.9.png" target-dir="res/drawable-hdpi"/>
+        <source-file src="src/android/res/infoEstimation/drawable-mdpi/ic_marker_destination_right_info.9.png" target-dir="res/drawable-mdpi"/>
+        <source-file src="src/android/res/infoEstimation/drawable-xhdpi/ic_marker_destination_right_info.9.png" target-dir="res/drawable-xhdpi"/>
+        <source-file src="src/android/res/infoEstimation/drawable-xxhdpi/ic_marker_destination_right_info.9.png" target-dir="res/drawable-xxhdpi"/>
+        <source-file src="src/android/res/infoEstimation/drawable-xxxhdpi/ic_marker_destination_right_info.9.png" target-dir="res/drawable-xxxhdpi"/>
+
+        <source-file src="src/android/res/infoEstimation/drawable-hdpi/ic_marker_destination_left_info.9.png" target-dir="res/drawable-hdpi"/>
+        <source-file src="src/android/res/infoEstimation/drawable-mdpi/ic_marker_destination_left_info.9.png" target-dir="res/drawable-mdpi"/>
+        <source-file src="src/android/res/infoEstimation/drawable-xhdpi/ic_marker_destination_left_info.9.png" target-dir="res/drawable-xhdpi"/>
+        <source-file src="src/android/res/infoEstimation/drawable-xxhdpi/ic_marker_destination_left_info.9.png" target-dir="res/drawable-xxhdpi"/>
+        <source-file src="src/android/res/infoEstimation/drawable-xxxhdpi/ic_marker_destination_left_info.9.png" target-dir="res/drawable-xxxhdpi"/>
+
         <source-file src="src/android/res/markers/drawable-hdpi/location.png" target-dir="res/drawable-hdpi"/>
         <source-file src="src/android/res/markers/drawable-mdpi/location.png" target-dir="res/drawable-mdpi"/>
         <source-file src="src/android/res/markers/drawable-xhdpi/location.png" target-dir="res/drawable-xhdpi"/>

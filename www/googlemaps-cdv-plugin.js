@@ -1490,11 +1490,12 @@ Marker.prototype.setIconAnchor = function(anchorX, anchorY) {
     this.set('anchor', [anchorX, anchorY]);
     cordova.exec(null, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.setIconAnchor', this.getId(), anchorX, anchorY]);
 };
-Marker.prototype.updateEstimationMarker = function(firstString, secondString, orientation) {
+Marker.prototype.updateEstimationMarker = function(firstString, secondString, orientation, showInfoMarker) {
   this.set('customMarkerFirstString',firstString);
   this.set('customMarkerSecondString',secondString);
   this.set('mapOrientation',orientation);
-  cordova.exec(null, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.updateEstimationMarker', this.getId(), firstString, secondString, orientation]);
+  this.set('showInfoMarker',showInfoMarker);
+  cordova.exec(null, this.errorHandler, PLUGIN_NAME, 'exec', ['Marker.updateEstimationMarker', this.getId(), firstString, secondString, orientation, showInfoMarker]);
 };
 Marker.prototype.showCustomInfoWindow = function(firstString, secondString, markerType) {
   this.set('customMarkerFirstString',firstString);
