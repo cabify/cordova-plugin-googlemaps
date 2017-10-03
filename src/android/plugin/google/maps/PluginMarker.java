@@ -747,11 +747,12 @@ public class PluginMarker extends MyPlugin {
     String firstString = args.getString(2);
     String secondString = args.getString(3);
     String mapOrientation = args.getString(4);
+    boolean showInfoMarker = args.getBoolean(5);
     Marker marker = this.getMarker(id);
 
     boolean markerOrientation = mapOrientation.equals("e2w");
 
-    buildDestinationMarker(marker, markerOrientation, firstString, secondString);
+    buildDestinationMarker(marker, markerOrientation, firstString, secondString, showInfoMarker);
 
     this.sendNoResult(callbackContext);
   }
@@ -898,7 +899,7 @@ public class PluginMarker extends MyPlugin {
         String firstString = iconProperty.getString("customMarkerFirstString");
         String secondString = iconProperty.getString("customMarkerSecondString");
         boolean markerOrientation = iconProperty.containsKey("mapOrientation") && iconProperty.getString("mapOrientation").equals("e2w");
-        buildDestinationMarker(marker, markerOrientation, firstString, secondString);
+        buildDestinationMarker(marker, markerOrientation, firstString, secondString, false);
         callback.onPostExecute(marker);
         return;
       }
@@ -1130,13 +1131,20 @@ public class PluginMarker extends MyPlugin {
   }
 
   private void buildDestinationMarker(Marker marker, boolean leftIndicator, String first,
-                                               String second) {
+                                               String second, boolean showInfoMarker) {
 
     IconGenerator iconFactory = new IconGenerator(getContext());
 
     TextView t = new TextView(getContext());
-    t.setBackgroundResource(leftIndicator ? FakedR.getId(getContext(),"drawable","ic_marker_destination_left")
+
+    if (showInfoMarker) {
+        t.setBackgroundResource(leftIndicator ? FakedR.getId(getContext(),"drawable","ic_marker_destination_left_info")
+            : FakedR.getId(getContext(),"drawable","ic_marker_destination_right_info"));
+    } else {
+        t.setBackgroundResource(leftIndicator ? FakedR.getId(getContext(),"drawable","ic_marker_destination_left")
             : FakedR.getId(getContext(),"drawable","ic_marker_destination_right"));
+    }
+
     t.setTextSize(11);
     t.setTextColor(Color.parseColor("#CCCCCC"));
     t.setIncludeFontPadding(false);
